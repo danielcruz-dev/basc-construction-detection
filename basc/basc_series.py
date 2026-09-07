@@ -45,9 +45,29 @@ def pooled_endmembers(dirs, per_site=60000, trim=0.01, seed=0):
     return M, diag
 
 
+def aoi_fill(g):
+    """Fraction of the raster's bounding box that lies inside the AOI polygon.
+
+    valid_frac is measured against the bbox, so an irregular AOI can never reach
+    1.0 -- the site-plan footprint union tops out near 0.50, the Regrid parcel
+    near 0.72, a ground square at 1.00. Comparing a single cloud threshold
+    across those confounds AOI SHAPE with cloud. Dividing by this ratio gives
+    clear_frac, which means the same thing for every AOI.
+    """
+    try:
+        from shapely.geometry import shape, box
+        geom = shape(g["geometry"])
+        x0, y0, x1, y1 = g["bbox"]
+        b = box(x0, y0, x1, y1).area
+        return float(geom.area / b) if b > 0 else 1.0
+    except Exception:
+        return 1.0
+
+
 def run_site(d, M, tau=0.5):
     g = json.load(open(os.path.join(d, "grid.json")))
     px_area = g["res_m_x"] * g["res_m_y"]
+    fill = max(aoi_fill(g), 1e-6)
     rows = []
     for p in g["periods"]:
         fn = os.path.join(d, f"{p}.tif")
@@ -62,8 +82,12 @@ def run_site(d, M, tau=0.5):
         if n < 20:
             rows.append({"period": p, "n_valid": n}); continue
         F, e = unmix(r[ok], M)
+        vf = n / (g["width"] * g["height"])
         row = {"period": p, "n_valid": n,
-               "valid_frac": float(n / (g["width"] * g["height"])),
+               "valid_frac": float(vf),
+               "aoi_fill": round(fill, 4),
+               # cloud-free share OF THE AOI, comparable across AOI shapes
+               "clear_frac": float(min(vf / fill, 1.0)),
                "rmse": float(np.mean(e))}
         for i, nm in enumerate(EM_NAMES):
             row[nm] = float(F[:, i].mean())

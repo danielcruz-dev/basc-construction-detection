@@ -16,3 +16,4 @@ __pycache__/
 # and belong to the lab, not to this replication repo.
 basc/results/acd_ui_corrections.json
 basc/stats_cache.json
+basc/results/sp16/
