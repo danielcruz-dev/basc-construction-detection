@@ -78,15 +78,28 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tau", type=float, default=0.5)
     ap.add_argument("--trim", type=float, default=0.01)
+    ap.add_argument("--endmembers", default="",
+                    help="path to an _endmembers.json to REUSE instead of extracting. "
+                         "Fractions are only comparable across AOI definitions if every "
+                         "run is projected onto the same basis; and a single small AOI "
+                         "does not span enough spectral range to place a simplex at all "
+                         "(the site-plan run put 'high albedo' at brightness 0.18, "
+                         "darker than its own soil).")
     ap.add_argument("--root", default=ROOT)
     ap.add_argument("--out", default=OUT)
     a = ap.parse_args()
     set_paths(a.root, a.out)
     os.makedirs(OUT, exist_ok=True)
     dirs = [d for d in site_dirs() if glob.glob(os.path.join(d, "*.tif"))]
-    print(f"pooling endmembers across {len(dirs)} sites")
-    M, diag = pooled_endmembers(dirs, trim=a.trim)
-    print(f"  {diag['n_pixels']} px -> {diag['n_after_trim']} after {a.trim:.1%} trim")
+    if a.endmembers:
+        src = json.load(open(a.endmembers))["endmembers"]
+        M = np.vstack([src[n] for n in EM_NAMES])
+        diag = {"reused_from": a.endmembers}
+        print(f"reusing endmembers from {a.endmembers}")
+    else:
+        print(f"pooling endmembers across {len(dirs)} sites")
+        M, diag = pooled_endmembers(dirs, trim=a.trim)
+        print(f"  {diag['n_pixels']} px -> {diag['n_after_trim']} after {a.trim:.1%} trim")
     print(f"  {'endmember':<14}" + "".join(f"{b:>8}" for b in ["B02","B03","B04","B08","B11","B12"]) + f"{'NDVI':>8}{'bright':>8}")
     for i, n in enumerate(EM_NAMES):
         e = M[i]

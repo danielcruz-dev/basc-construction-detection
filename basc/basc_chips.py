@@ -29,7 +29,10 @@ def main():
     a = ap.parse_args(); set_paths(a.root, a.out)
     for d in sorted(glob.glob(os.path.join(ROOT, "*"))):
         if not os.path.isdir(d): continue
-        g = json.load(open(os.path.join(d, "grid.json")))
+        gp = os.path.join(d, "grid.json")
+        if not os.path.exists(gp):
+            continue          # site skipped upstream (e.g. no site plan for it)
+        g = json.load(open(gp))
         slug = os.path.basename(d)
         od = os.path.join(OUT, slug); os.makedirs(od, exist_ok=True)
 
