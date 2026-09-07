@@ -119,21 +119,75 @@ def extract_endmembers(X, seed=0, trim=0.005, knn=200):
         near = np.argpartition(d, min(knn, len(d) - 1))[:knn]
         E[j] = np.median(X[near], axis=0)
 
-    b = E.mean(1)
-    red, nir = E[:, 2], E[:, 3]
+    b = E.mean(1)                                       # brightness
+    red, nir, sw1, sw2 = E[:, 2], E[:, 3], E[:, 4], E[:, 5]
     ndvi = (nir - red) / (nir + red + 1e-6)
+    swir_contrast = sw1 - nir          # > 0 is the defining soil signature
 
-    lab, taken = {}, set()
-    def claim(name, order):
+    # Cloud, thin cirrus and snow are bright in the visible and NIR and then
+    # COLLAPSE in the SWIR, because ice absorbs there. Bare soil does the
+    # opposite. Labelling by brightness rank alone confuses the two, and on the
+    # site-plan AOIs it did: soil is the brightest thing present on
+    # largely-undeveloped land, so it was labelled "high albedo" while an
+    # ice-like vertex was labelled "soil".
+    ice_like = (b > 0.24) & (swir_contrast < -0.10) & (ndvi < 0.40)
+
+    lab, taken, notes = {}, set(), []
+
+    def claim(name, order, allowed=None):
         for i in order:
-            if i not in taken:
-                lab[name] = int(i); taken.add(int(i)); return
-    claim("vegetation",  np.argsort(-ndvi))
-    claim("high_albedo", np.argsort(-b))
-    claim("low_albedo",  np.argsort(b))
-    claim("soil",        np.argsort(-(E[:, 4] - E[:, 3])))
+            i = int(i)
+            if i in taken:
+                continue
+            if allowed is not None and not allowed[i]:
+                continue
+            lab[name] = i
+            taken.add(i)
+            return True
+        return False
+
+    # Order matters: each class is claimed by its most DISCRIMINATIVE feature,
+    # strongest discriminator first, so a weak rank never steals a vertex that
+    # a strong shape rule needs.
+    claim("vegetation", np.argsort(-ndvi))                       # NDVI is decisive
+    claim("soil", np.argsort(-swir_contrast),                    # SWIR1 > NIR
+          allowed=(swir_contrast > 0.0) & ~ice_like)
+    got_high = claim("high_albedo", np.argsort(-b), allowed=~ice_like)
+    claim("low_albedo", np.argsort(b))
+    # anything still unclaimed fills the remaining slots, but is flagged
+    for name in EM_NAMES:
+        if name not in lab:
+            claim(name, np.argsort(-b))
+            notes.append(f"{name}: no vertex matched its shape rule; filled by "
+                         f"brightness rank — fractions for it are not trustworthy")
+
+    if ice_like.any():
+        notes.append(f"{int(ice_like.sum())} of 4 vertices look like cloud/snow "
+                     f"(bright with SWIR collapse) — CLP masking did not remove "
+                     f"them from the endmember pool")
+    # A vertex is only a HIGH-albedo endmember if it is actually bright. The
+    # shape rules can run out of candidates: on tightly-cropped site-plan AOIs
+    # over undeveloped land there is no bright impervious surface in the pool
+    # at all, and the slot then gets filled by whatever is left -- once by a
+    # DARK vegetation vertex at brightness 0.068. Saying so is the correct
+    # output; quietly labelling it "high albedo" is not.
+    hi, so = lab.get("high_albedo"), lab.get("soil")
+    if hi is not None:
+        if b[hi] < 0.20 or (so is not None and b[hi] <= b[so]):
+            notes.append(
+                f"UNRELIABLE: 'high_albedo' vertex has brightness {b[hi]:.3f}"
+                + (f" (dimmer than soil at {b[so]:.3f})" if so is not None else "")
+                + " — this pixel pool contains no bright impervious surface, so "
+                  "the high/low albedo fractions are not interpretable. "
+                  "Vegetation and soil remain valid.")
+    if not got_high:
+        notes.append("no non-ice bright vertex available for high_albedo")
+
     M = np.vstack([E[lab[n]] for n in EM_NAMES])
     return M, {"n_pixels": int(n0), "n_after_trim": int(len(X)),
+               "label_notes": notes,
+               "swir_contrast": swir_contrast[[lab[n] for n in EM_NAMES]].tolist(),
+               "ice_like": ice_like[[lab[n] for n in EM_NAMES]].tolist(),
                "simplex_volume": float(v), "knn": knn,
                "pca_explained": pca.explained_variance_ratio_.tolist(),
                "ndvi": ndvi[[lab[n] for n in EM_NAMES]].tolist(),

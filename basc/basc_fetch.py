@@ -86,7 +86,17 @@ function evaluatePixel(s) {
 }"""
 
 OUT = "results"
-def slug(s): return re.sub(r"[^a-z0-9]+","-",s.lower()).strip("-")[:60]
+def slug(name, uid=None):
+    """Directory name for a site.
+
+    The uid suffix is not decoration. Three distinct campuses in the inventory
+    are all called "Amazon Data Services Inc Campus"; on a name-only slug they
+    shared one directory and silently overwrote each other's rasters AND
+    grid.json, leaving a folder whose imagery and geometry came from different
+    sites. Names are not unique in this data; uids are.
+    """
+    base = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")[:48]
+    return f"{base}-{uid[:8]}" if uid else base
 
 def fetch(cdse, bbox, geom, start, end, w, h, collection):
     payload = {
@@ -150,7 +160,7 @@ def main():
     jobs = []
     for uid in picks:
         s = sites[uid]
-        d = os.path.join(OUT, a.tag, slug(s.unit_name)); os.makedirs(d, exist_ok=True)
+        d = os.path.join(OUT, a.tag, slug(s.unit_name, uid)); os.makedirs(d, exist_ok=True)
         aoi_rec = None
         if a.resolve:
             obs = a.observation_date or period_bounds(unordn(truth[uid]))[0]
@@ -192,6 +202,9 @@ def main():
         for p in periods:
             fn = os.path.join(d, f"{p}.tif")
             if not os.path.exists(fn): jobs.append((s, geom, p, fn, w, h))
+    dirs = [os.path.dirname(j[3]) for j in jobs]
+    if len(set(dirs)) != len({os.path.basename(x) for x in set(dirs)}):
+        raise SystemExit("output directory collision — refusing to overwrite")
     print(f"{len(jobs)} rasters to fetch")
     if a.dry_run or not jobs: return
 
