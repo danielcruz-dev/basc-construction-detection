@@ -1,0 +1,441 @@
+================================================================================
+CONSTRUCTION-START DETECTION -- STRUCTURE OF THE MODEL
+BASC replication on Sentinel-2 / Aterio data-centre sites
+Written 2026-09-07. Reflects the state of the work on that date.
+================================================================================
+
+This describes what the system computes, in what order, and why each step is
+shaped the way it is. It is written for someone who has not seen the code. Where
+a number appears it was measured in this repo, not assumed; where something is
+unproven it says so.
+
+Companion document: MODEL_CONTEXT.txt in ~/Aterio/acd-polygon-lab describes the
+PREVIOUS generation (hand-written detectors on NDVI/NDBI/SWIR). This one
+describes the replacement being evaluated.
+
+
+================================================================================
+0. WHAT THE SYSTEM IS FOR
+================================================================================
+
+Given a data-centre site and a fortnight, decide whether heavy construction
+started there. "Started" means the visually obvious transition -- land cleared,
+graded, foundations -- as confirmed by eye against satellite imagery.
+
+The output is NOT an autonomous alarm. It fills a human review queue: each
+fortnight a reviewer opens some number of sites and the system chooses which.
+Success is "how many real starts land in a queue of K", not "accuracy".
+
+Time is discretised into HALF-MONTHS ("periods"). 2024-03-H1 is 1-15 March,
+2024-03-H2 is 16-31 March. One period is about 15 days. Offsets are in periods
+relative to the verified start, so -4 means two months before.
+
+THE NUMBER THAT GOVERNS EVERYTHING: the base rate is 3.6 real starts per
+fortnight across a 932-site startable universe = 0.39%, roughly 1 in 260. A
+detector firing on 20% of site-periods produces ~180 false alerts per real
+start regardless of how good its "hit rate" looks.
+
+
+================================================================================
+1. PIPELINE, END TO END
+================================================================================
+
+    site + fortnight
+        |
+        v
+    [1] AOI          which polygon on the ground do we measure?
+        |
+        v
+    [2] FETCH        one Sentinel-2 raster per site per fortnight
+        |            6 bands + cloud probability + validity mask
+        v
+    [3] MASK         SCL classes 4/5/6/7 AND s2cloudless CLP <= 65%
+        |
+        v
+    [4] UNMIX        fully constrained LSMA -> 4 endmember fractions per PIXEL
+        |
+        v
+    [5] REDUCE       mean fraction over the AOI, and AREA above a threshold
+        |
+        v
+    [6] TEST         onset window vs the same season in earlier years,
+                     with a placebo arm
+
+Steps 1-5 are `basc_fetch.py` -> `basc_lsma.py` -> `basc_series.py`. Step 6 is
+`basc_test.py`. `basc_chips.py` renders truecolor thumbnails from the same
+arrays so the imagery and the numbers can be read side by side, and
+`build_viz.py` assembles the viewer.
+
+
+================================================================================
+2. [1] THE AOI -- THE DECISION THAT MATTERS MOST
+================================================================================
+
+Everything downstream is an average over the AOI, so the AOI choice sets the
+signal-to-noise before any modelling happens. Four definitions are implemented
+and directly comparable in the viewer.
+
+2.1 WHY THE REGRID PARCEL IS THE WRONG UNIT
+Parcel areas run 4 ha to 1,864 ha (median 44.7, p90 155.5). A construction pad
+is a few hectares, so on a large campus the event is a fraction of a percent of
+the polygon and disappears into the mean. Concretely, 8,000 m2 as a share of:
+
+    Microsoft WI, 320 ha parcel      0.25%
+    Digital VA,   181 ha parcel      0.44%
+    400 m box,     16 ha             5.00%
+    1000 m box,   100 ha             0.80%
+
+189 of 1,209 sites have no usable parcel at all (box_no_parcel /
+box_parcel_rejected), and parcel SHAPE leaks into everything -- the QTS raster
+is 370 px wide against Digital's 64, so even the imagery is not comparable.
+
+2.2 WHY A BOX ON THE POINT IS NOT ENOUGH EITHER
+Measured: take the per-pixel change across the start, keep the top 5%, and ask
+how far those pixels sit from the site coordinate.
+
+    site          bld   median   within 400m   within 1000m
+    NTT IL          3    144 m       98%           100%
+    Eagan MN        1     98 m       95%           100%
+    Digital VA     11    375 m       26%            71%
+    Microsoft WI    9    554 m        0%            39%
+    QTS IA          7    751 m        0%             0%
+
+All five coordinates are coord_confirmed. So on large multi-building campuses
+the confirmed point is simply not where the construction is. Only 362 of 1,209
+coordinates are confirmed at all.
+
+A box forces a trade: capture the event, or be sensitive to it. Not both.
+
+2.3 THE SITE-PLAN AOI
+The monitor repo (aterio-data-centers-map-monitor, branch
+feature/site-plans-batch-2026-09-07) carries
+public/poc/site-plans/plan-meta.json: 105 georeferenced layers over 98
+campuses, each with corner coordinates, per-building polygon RINGS, floor
+areas, and a georeferencing fit block (residual_m, jackknife).
+
+`--siteplan` takes the union of a campus's planned building footprints and
+buffers it. This escapes the trade in 2.2 because it is not a box -- it is
+shaped like the development, so it can span a 1.7 km campus while excluding the
+surrounding farmland.
+
+LEAKAGE GUARD, and it is not optional: a sheet dated AFTER the verified start
+is refused. An AOI drawn around where the buildings ended up is not information
+a detector could have had before they were built. This guard drops 11 of the 27
+campuses that have both a verified start and a site plan, leaving 16.
+
+(Judgement call worth revisiting: these are architectural drawings of PROPOSED
+buildings, so a late-filed sheet may still represent pre-construction intent
+rather than an as-built trace. The strict reading is the safe one and is what
+runs; relaxing it would restore 27.)
+
+BUFFERING IS DONE IN METRES, NOT DEGREES. A degree of longitude is
+111.3*cos(lat) km against 110.5 km for latitude, so a raw degree buffer
+stretches the AOI about 28% north-south at these latitudes. The geometry is
+scaled by cos(lat), buffered, and scaled back.
+
+
+================================================================================
+3. [2][3] DATA AND MASKING
+================================================================================
+
+Source: Sentinel-2 L2A (surface reflectance) via the CDSE Process API, one
+raster per site-period at native 10 m. Bands B02, B03, B04, B08, B11, B12 --
+the six Wu & Murray need -- plus CLP and a validity mask, as float32 GeoTIFF.
+
+WHY THE PROCESS API AND NOT THE STATISTICS API. The Statistics API returns
+polygon AGGREGATES. LSMA, connected-component area rules and per-pixel change
+all need PIXELS. The Process API costs the SAME ONE CALL per site-period and
+returns the raster: a median 47 ha AOI at 10 m is about 68x68 px, roughly
+110 KB in six float32 bands. Aggregation is a concession the Statistics API
+forces, and it is what destroys the signal.
+
+CLOUD IS TWO DIFFERENT PROBLEMS.
+
+  (a) The tile-level `maxCloudCoverage` filter is measured over the whole
+      ~110 km granule, not the AOI. Tightening it only creates gaps. Measured:
+      relaxing it 40 -> 100 on one site recovered just 5 of 31 missing periods;
+      22 came back with ZERO valid pixels even wide open. So it is left LOOSE
+      at 100 and the real filtering is per pixel.
+
+  (b) SCL alone misses thin cirrus, and thin cirrus unmixes as HIGH ALBEDO --
+      precisely the fraction construction is supposed to move. Measured:
+      high_albedo anti-correlates with valid-pixel count at -0.37 to -0.42, and
+      one period SCL called entirely cloud-free carried CLP up to 185/255.
+
+      Adding s2cloudless CLP <= 65% (0.65*255), as the paper does:
+
+        period            px dropped   high_albedo SCL -> +CLP
+        2025-04-H1 clear      0.6%        0.0241 -> 0.0238   (-0.1%)
+        2025-06-H1 start      9.5%        0.0485 -> 0.0476   (-0.2%)
+        2025-05-H1 cloudy     9.0%        0.0907 -> 0.0698   (-23%)
+        2025-07-H2 cloudy     9.6%        0.1362 -> 0.0914   (-33%)
+
+      Clean periods barely move; the spurious spikes lose a third. That is the
+      right shape: it attacks the artefact and leaves the signal alone.
+
+CLEAR_FRAC, NOT VALID_FRAC. valid_frac is measured against the raster's
+BOUNDING BOX, so an irregular AOI can never reach 1.0 -- site-plan footprint
+unions top out near 0.50, Regrid parcels near 0.72, ground squares at 1.00. One
+cloud threshold across those confounds AOI SHAPE with cloud. So
+
+    clear_frac = valid_frac / aoi_fill,     aoi_fill = poly.area / bbox.area
+
+and clear_frac means the same thing for every AOI.
+
+GAPS ARE REAL AND ARE NOT INTERPOLATED. Overall 69% of periods are clear. Of 76
+gap runs, 51 are a single fortnight and 9 are 4+. Clear rate by month:
+
+    01:35% 02:48% 03:60% 04:68% 05:82% 06:80%
+    07:85% 08:72% 09:91% 10:100% 11:73% 12:43%
+
+The long gaps are winter SNOW, not cloud. Interpolating across them is refused
+on principle: filling a gap assumes nothing abrupt happened inside it, which is
+exactly the hypothesis under test -- a real onset in the gap would be smoothed
+into a ramp and misdated. Harmonic/CCDC/BFAST-family models consume irregular
+observations natively and need no filling. The principled fix for cloud gaps is
+SAR (Sentinel-1 sees through cloud), which remains unanswered.
+
+A WORRY THIS RAISES ABOUT THE LABELS: verified starts concentrate in the
+worst-observed months. February alone is 15.8% of all starts at 48% clear;
+Jan-Mar carry 37.9% at 35-60%. Start-weighted clear rate 66% vs 70% unweighted.
+If reviewers date a start to when disturbance BECAME VISIBLE after snowmelt
+rather than when it began, that is a systematic bias in the ground truth and no
+amount of cloud filtering would reveal it.
+
+
+================================================================================
+4. [4] LINEAR SPECTRAL MIXTURE ANALYSIS
+================================================================================
+
+Each pixel's reflectance is modelled as a mixture of four endmembers:
+
+    VEGETATION       green vegetation
+    SOIL             bare/exposed ground
+    HIGH ALBEDO      bright impervious -- concrete, light roofs (and, honestly,
+                     cloud and sand; Wu & Murray say so themselves)
+    LOW ALBEDO       dark impervious, water, shadow
+
+This is the Wu & Murray (2003) urban V-I-S set the paper adopts. Fully
+constrained: fractions are non-negative and sum to one.
+
+4.1 WHY FRACTIONS RATHER THAN INDICES
+Construction is a BRIGHTNESS event: vegetation -> bare soil -> concrete.
+Normalised ratio indices are DESIGNED to cancel overall brightness -- that is
+their purpose, to remove illumination and topography. Using them here discards
+the quantity that changes. Two consequences visible in the old model:
+
+  * raw B11 ("swir"), the only NON-ratio feature, carries the largest
+    coefficient in the whole logistic model at +0.82.
+  * NDBI is structurally degenerate for this target. NDBI = (B11-B8)/(B11+B8),
+    and bare soil AND finished buildings both have B11 > B8, so it cannot
+    separate the two ends of the process being timed. Its measured weakness
+    (0.023 paired AUC lift at one period) is not bad luck.
+
+Fractions also carry a physical unit: fraction x AOI area = AREA IN SQUARE
+METRES, which is what the 8,000 m2 minimum mapping unit is stated in.
+
+4.2 ENDMEMBERS -- WHY NOT WU & MURRAY'S NUMBERS
+The paper says it uses "the same endmember values introduced in Wu and Murray
+(2003)". Those values are NOT PUBLISHED AS NUMBERS. Wu & Murray print them only
+as a plot (their Fig. 5) and there is no table anywhere in the text; they were
+image-derived from feature-space extremes of a single July-1999 Columbus, Ohio
+ETM+ scene. Transplanting spectra from a 1999 Ohio scene onto 2025 Sentinel-2
+over Iowa and Virginia would be indefensible even if the numbers existed.
+
+So the METHOD is replicated, not the values:
+
+    1. pool valid pixels across all sites in the run
+    2. winsorise PER BAND at 0.5-1%
+    3. PCA to 3 components
+    4. N-FINDR: find the 4 pixels maximising simplex volume
+    5. replace each vertex by the MEDIAN of its 200 nearest neighbours in PC
+       space
+    6. label by spectral character: greenest -> vegetation, brightest ->
+       high albedo, darkest -> low albedo, remaining -> soil
+
+Steps 2 and 5 are both necessary and both were added after seeing the failure.
+N-FINDR maximises volume, so raw it chases whatever single pixel is most
+extreme: it produced a "soil" endmember peaking at B12 = 0.85 (real soil peaks
+at B11) and a "high albedo" rising into the NIR, which is an ice signature, not
+a roof. A brightness-only trim does not catch the soil case because that vertex
+sat at moderate mean brightness -- the trim must be per band.
+
+4.3 ENDMEMBERS MUST BE SHARED ACROSS ANYTHING BEING COMPARED
+Fractions are coordinates in a basis. Two runs with different endmembers are
+not comparable, and a single small AOI does not span enough spectral range to
+seat a simplex at all -- pooling from one site-plan AOI put "high albedo" at
+brightness 0.18, DARKER than its own soil. `basc_series.py --endmembers`
+reuses a fixed basis for exactly this reason.
+
+This was caught late. An earlier reported result (Digital's high-albedo onset
+delta rising from +0.022 to +0.034 under a tighter AOI) was an artefact of the
+basis changing underneath the comparison; on a shared basis it is +0.022 ->
++0.018, slightly weaker.
+
+4.4 SOLVING IT
+Fully constrained least squares, exact and vectorised. For each of the 15
+non-empty subsets of the 4 endmembers, the sum-to-one constrained LS problem
+has a closed form whose matrix depends only on the endmembers, so it is
+inverted once and applied to every pixel at once; the best feasible
+(non-negative) subset wins. Verified to recover a known mixture to 4e-16.
+A per-pixel NNLS loop would take hours on 3M pixels; this takes seconds.
+
+
+================================================================================
+5. [5] REDUCTION
+================================================================================
+
+Per AOI per period:
+
+    <endmember>              mean fraction over valid pixels
+    <endmember>_area_m2      pixels with fraction >= tau (0.5), times pixel area
+    ndvi, ndbi, swir         the old feature set, from the SAME pixels and mask
+    rmse                     mean unmixing residual -- a QA channel
+    clear_frac, aoi_fill     see section 3
+
+The area channel is the aggregate-safe stand-in for the paper's connected
+components. It is NOT equivalent: 80 scattered bare pixels from tillage score
+the same as one 8,000 m2 pad. Contiguity needs the pixels, which we now have --
+implementing true connected components is open work.
+
+
+================================================================================
+6. [6] THE TEST
+================================================================================
+
+6.1 WHAT WAS WRONG WITH THE OBVIOUS TEST
+Comparing an onset window (-1..+2) against a baseline window (-8..-3) compares
+DIFFERENT SEASONS. In these data the seasonal swing is several times the
+construction signal, so the comparison is dominated by green-up. Every early
+result in this repo that used it should be read as noise.
+
+6.2 THE DESIGN THAT WORKS
+Compare the onset fortnights against THE SAME CALENDAR FORTNIGHTS one and two
+years earlier, at the same site:
+
+    delta = mean(onset) - mean(same fortnights, earlier years)
+
+Each site is its own control, matched on season. This removes site geography
+and the annual cycle together, and needs no separate negative-parcel sweep.
+
+6.3 THE PLACEBO ARM
+The same statistic is recomputed with the start shifted a whole year: same
+season, no event. If the real statistic does not clearly beat the placebo, the
+"signal" is window arithmetic -- the failure mode that produced v1/v4's 54-60%
+"hit rates", which were an artefact of scoring P(>=1 flag in a 4-period window).
+
+6.4 WHAT IT SHOWED ON FIVE SITES (n=5 -- machinery validation only)
+
+    metric        REAL mean          95% CI      PLACEBO mean            verdict
+    soil            +0.1126  [+0.0129,+0.2124]      -0.0314              REAL
+    high_albedo     +0.0312  [+0.0152,+0.0472]      -0.0026              REAL
+    vegetation      -0.1254  [-0.2175,-0.0352]      -0.0047              REAL
+    ndvi            -0.2064  [-0.3346,-0.0782]      +0.0201              REAL
+    ndbi            +0.0902  [-0.0065,+0.1869]      +0.0250              no signal
+    swir            +0.0309  [-0.0073,+0.0628]      -0.0063              no signal
+    low_albedo      -0.0184  [-0.0637,+0.0422]      +0.0387              no signal
+
+    Two of the CURRENT detector's three inputs (ndbi, swir) fail to clear zero
+    on data where soil and high_albedo clear it. A bootstrap over five points
+    is not a confidence interval; this validates the code, not the claim.
+
+
+================================================================================
+7. WHAT IS DELIBERATELY NOT HERE
+================================================================================
+
+CCDC. The paper runs CCDC and then filters its output with seven rules. CCDC
+needs ~2 years of history to initialise AND a fitted POST-break segment to
+produce Model Difference / Predicted Value After -- five of the seven rules
+therefore cannot run in near-real-time, and a post-break segment is 7-8 months
+of fortnights away. The paper's own success criterion is a detection within TWO
+YEARS of the true date. This product needs a fortnight. Only 35 of 240 verified
+starts currently have >=12 clear observations on both sides of the start
+(recoverable to ~168 by fetching, about 2,500 calls).
+
+CCDC would fix SEASONALITY, which the season-matched design in 6.2 also fixes,
+more cheaply. It would NOT fix DILUTION, which is an AOI problem.
+
+The paper's rule table is likewise not implemented: rules 2, 4, 5, 6, 7 all
+need Cdif or Paft. What survives is the physical logic, not the thresholds --
+and the thresholds are calibrated on Landsat (30 m, 8,000 m2 = 9 pixels) with
+Landsat-derived endmembers on TOA reflectance, none of which transfer verbatim
+to Sentinel-2 L2A at 10 m (8,000 m2 = 80 pixels).
+
+
+================================================================================
+8. WHAT IS ESTABLISHED, AND WHAT IS NOT
+================================================================================
+
+ESTABLISHED
+  * The unmixing is correct (exact recovery to 4e-16) and the endmembers are
+    physically sensible when pooled across enough sites.
+  * CLP masking removes 23-33% of spurious high albedo on cloudy periods and
+    <0.2% on clear ones.
+  * The tile-level cloud filter is not a useful lever; per-pixel is.
+  * AOI choice dominates: on large campuses the confirmed site point is not
+    where the construction is, and the parcel mean cannot see an 8,000 m2 event.
+  * Season-matched comparison finds structure that season-mismatched comparison
+    does not.
+
+NOT ESTABLISHED -- DO NOT CLAIM
+  * That any of this detects construction better than the current model. There
+    is no head-to-head against the 0.732 AUC baseline, and no negative class.
+  * Anything from n=5.
+  * That the site-plan AOI helps. On the one campus tested it gave the WEAKEST
+    signal, and inside Digital Dulles' 7 planned footprints the high-albedo
+    area never exceeds 0.09 ha across the whole 2023-2026 record, against an
+    8,000 m2 (0.8 ha) bar -- i.e. nothing is ever built on those pads in this
+    data. Either the works began elsewhere on the 181 ha campus or that start
+    date is not supported by the imagery. That is a ground-truth question.
+
+IN FLIGHT AT TIME OF WRITING
+  * 16-campus site-plan run (1,424 rasters), fresh endmembers pooled across all
+    16, then the section 6 test at n=16.
+  * Note the 16 are not a random sample of the 240: campuses with municipal
+    filings on file skew large and well-documented.
+
+
+================================================================================
+9. FILES
+================================================================================
+
+  basc_fetch.py     rasters. --aoi-m N ground square | --siteplan META | default
+                    Regrid parcel. Resumable: re-run to retry failures.
+  basc_lsma.py      endmember extraction + vectorised fully constrained LSMA
+  basc_series.py    unmix every period -> fraction/area series. --endmembers to
+                    pin a shared basis.
+  add_indices.py    ndvi/ndbi/swir from the same rasters and mask
+  basc_chips.py     truecolor thumbnails, ONE fixed stretch per site so
+                    brightness changes are real and not autoscaled
+  build_viz.py      N-variant viewer  (+ viz_template.html)
+  basc_test.py      season-matched onset test with placebo arm
+  results/fraction_timeseries.html   the viewer
+
+  acd_core.py, sites.py, replay.py are copies of the lab's modules.
+
+EXTERNAL DEPENDENCIES NOT IN THIS REPO
+  ~/.cdse.env                                CDSE OAuth credentials
+  ~/Aterio/parcels-run/                      parcel geometries + inventory
+  ~/Aterio/acd-polygon-lab/results/acd_ui_corrections.json   verified starts
+  ~/Aterio/acd-restored/public/poc/site-plans/plan-meta.json georeferenced plans
+
+
+================================================================================
+10. OPERATIONAL GOTCHAS
+================================================================================
+
+  * Use /home/azul/miniconda3/envs/geo/bin/python. That env's PROJ database is
+    broken -- filter noisy warnings with `| grep -v PROJ`; do NOT "fix" it with
+    to_crs().
+  * Set PYTHONPATH to this directory; the modules import each other.
+  * CDSE: 4 concurrent workers max. More causes throttling, not speed.
+    Transient connection failures are normal; failed calls are not cached, so
+    re-running the same command retries exactly those.
+  * load_sites() takes ~2 minutes before any fetch starts. Normal.
+  * Serve the viewer over http, not file:// -- chips are relative paths. Use a
+    THREADING server; the stdlib single-threaded one serialises ~380 thumbnail
+    requests and the page appears to hang.
+  * Do not `pgrep -f` a pattern that matches the waiting shell's own command
+    line. It matches itself and waits forever.
+================================================================================
