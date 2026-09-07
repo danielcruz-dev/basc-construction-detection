@@ -13,9 +13,12 @@ from __future__ import annotations
 import argparse, concurrent.futures as cf, json, math, os, re, threading, time
 from acd_core import Cdse, CDSE_PROCESS_URL, MAX_CLOUD_COVERAGE, period_bounds
 from replay import load_truth, unordn, ordn, period_of
-from sites import load_sites, ground_square
+from sites import load_sites
+from geo_utils import ground_square
+from aoi import resolve_aoi, to_json as aoi_to_json, provenance, load_plan_layers
 
 MAXCC = [100]
+PLAN_LAYERS = []
 
 
 def siteplan_geom(meta_path, uid, start_ord, buffer_m, site):
@@ -109,6 +112,14 @@ def main():
     ap.add_argument("--tag",         default="l2a")
     ap.add_argument("--res-m", type=float, default=10.0)
     ap.add_argument("--max-px", type=int, default=1000)
+    ap.add_argument("--resolve", action="store_true",
+                    help="use the unified AOI resolver (site plan > parcel > point "
+                         "box) with per-observation-date gating, instead of forcing "
+                         "one AOI kind for every site")
+    ap.add_argument("--observation-date", default="",
+                    help="date the AOI is resolved AS OF. Defaults to each site's "
+                         "verified start, which is what a chronological replay of "
+                         "that site would have had available.")
     ap.add_argument("--siteplan", default="",
                     help="path to plan-meta.json; use the union of that campus's "
                          "planned building footprints (buffered by --siteplan-buffer) "
@@ -127,6 +138,8 @@ def main():
     a = ap.parse_args()
 
     MAXCC[0] = a.max_cloud
+    global PLAN_LAYERS
+    PLAN_LAYERS = load_plan_layers(a.siteplan) if a.siteplan else []
     picks = json.load(open(a.picks))
     print("loading sites (~2 min) ...", flush=True)
     sites = {s.unit_uid: s for s in load_sites()}
@@ -138,7 +151,19 @@ def main():
     for uid in picks:
         s = sites[uid]
         d = os.path.join(OUT, a.tag, slug(s.unit_name)); os.makedirs(d, exist_ok=True)
-        if a.siteplan:
+        aoi_rec = None
+        if a.resolve:
+            obs = a.observation_date or period_bounds(unordn(truth[uid]))[0]
+            aoi_rec = resolve_aoi(s, observation_date=obs,
+                                  plan_layers=PLAN_LAYERS,
+                                  config={"siteplan_buffer_m": a.siteplan_buffer})
+            geom = aoi_rec["geometry"]
+            print(f"  {s.unit_name[:40]:<40} AOI={aoi_rec['source']:<9} "
+                  f"conf={aoi_rec['confidence']:.2f} "
+                  f"{aoi_rec['area_m2']/1e4:7.1f} ha")
+            for w in aoi_rec["warnings"][:2]:
+                print(f"      warn: {w[:96]}")
+        elif a.siteplan:
             geom = siteplan_geom(a.siteplan, uid, truth[uid], a.siteplan_buffer, s)
             if geom is None:
                 print(f"  {s.unit_name[:44]:<44} no usable site plan, skipped"); continue
@@ -158,6 +183,8 @@ def main():
                    "periods":periods,"collection":a.collection,
                    "bands":["B02","B03","B04","B08","B11","B12","CLP","valid"],
                    "aoi_m":a.aoi_m, "max_cloud":a.max_cloud,
+                   "aoi": aoi_to_json(aoi_rec) if aoi_rec else None,
+                   "aoi_provenance": provenance(aoi_rec) if aoi_rec else None,
                    "lat":s.lat, "lon":s.lon,
                    "geometry":mapping(geom)}, open(os.path.join(d,"grid.json"),"w"))
         print(f"  {s.unit_name[:44]:<44} {s.area_ha if hasattr(s,'area_ha') else s.area_m2/1e4:7.1f} ha  "
