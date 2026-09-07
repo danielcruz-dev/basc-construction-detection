@@ -1,0 +1,12 @@
+# Raw Sentinel-2 stacks: 77 MB, regenerable from basc_fetch.py with CDSE
+# credentials. The derived series/ and chips/ are committed instead.
+basc/results/l2a/
+basc/results/aoi400/
+*.tif
+__pycache__/
+*.pyc
+
+# Copies of a live Cloud Run production model — deliberately not committed.
+# Originals: ~/Aterio/aterio-gcp-data-operations/gcp-cloud-run/services/
+#   data-centers/data-process-data-centers-api/app/models/
+*.pkl
