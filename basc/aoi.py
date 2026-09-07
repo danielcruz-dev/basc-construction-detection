@@ -36,6 +36,7 @@ from shapely.geometry import Point, mapping
 
 from geo_utils import (as_geom, buffer_m, geodesic_area_m2, geodesic_distance_m,
                        ground_square, safe_union)
+from siteplan_meta import load_docs
 
 # ---------------------------------------------------------------------------
 # Validation thresholds. These are POLICY, not physics -- they are the points
@@ -46,13 +47,26 @@ DEFAULTS = dict(
     siteplan_buffer_m=150.0,     # clearing/grading/roads reach well past the pad
     context_buffer_m=400.0,      # discovery ring around the development zone
     point_sizes_m=(400.0, 1000.0),
-    max_residual_m=25.0,         # georeferencing fit; beyond this the plan is
-                                 # not reliably on the ground at 10 m pixels
-    max_parcel_ha=800.0,         # above this a parcel mean is meaningless
+    max_residual_m=60.0,         # HARD: beyond ~6 pixels the plan is not on the
+                                 # ground at all. Not a quality preference.
+    warn_residual_m=15.0,
+    # Parcel size is a QUALITY signal, never a rejection. A 900 ha parcel is
+    # still the only search boundary that site has; it is tiled, not discarded.
     warn_parcel_ha=150.0,
-    max_point_offset_m=2000.0,   # point should sit in/near its parcel
+    tile_parcel_ha=100.0,        # above this, search in tiles rather than whole
+    tile_px=64,
+    tile_overlap_px=16,
+    warn_point_offset_m=1000.0,
+    max_point_offset_m=5000.0,   # HARD: beyond this the point and polygon are
+                                 # not the same place and one of them is wrong
     min_footprints=1,
+    policy="strict",             # strict | relaxed (relaxed is a SENSITIVITY
+                                 # analysis and is reported separately)
 )
+
+# Only these three justify refusing a level outright. Everything else degrades
+# the quality score and raises a warning.
+HARD_REJECTIONS = ("invalid geometry", "unusable georeferencing", "temporal leakage")
 
 COORD_QUALITY = ("confirmed", "approximate", "inferred")
 
@@ -81,40 +95,38 @@ def _parse_date(v) -> dt.date | None:
 # ---------------------------------------------------------------------------
 
 def _siteplan_candidate(plan_layers, campus_uid, observation_date, cfg, warnings):
-    """Best usable plan layer set for this campus at this date, or None + reason.
+    """Usable plan documents for this campus at this date, or None + reason.
 
-    Rejection is per SHEET, not per campus: a campus may hold a valid 2024
-    masterplan and a 2025 revision, and scoring mid-2024 must use only the
-    first. This is the temporal-leakage guard and it is the whole reason
-    resolution takes an observation date.
+    Rejection is per DOCUMENT and only ever for the three hard reasons:
+    temporal leakage (the sheet did not exist yet, or is an as-built), unusable
+    georeferencing, or no geometry. A merely mediocre fit is kept and warned
+    about -- discarding it would silently demote the site to a parcel mean,
+    which is worse than a plan that is 20 m off.
     """
-    mine = [l for l in plan_layers if l.get("campus_uid") == campus_uid]
-    if not mine:
+    docs = [d for d in load_docs(plan_layers) if d.campus_uid == campus_uid]
+    if not docs:
         return None, "no site plan for campus"
 
+    policy = cfg.get("policy", "strict")
     usable, rejected = [], []
-    for l in mine:
-        d = _parse_date(l.get("sheet_date"))
-        if d is None:
-            rejected.append((l.get("key"), "no sheet date"))
+    for d in docs:
+        ok, why = d.availability(observation_date, policy)
+        if not ok:
+            rejected.append((d.key, why, "temporal leakage"))
             continue
-        if observation_date is not None and d > observation_date:
-            rejected.append((l.get("key"), f"sheet {d} postdates observation"))
+        if d.residual_m is not None and d.residual_m > cfg["max_residual_m"]:
+            rejected.append((d.key, f"residual {d.residual_m:.1f} m",
+                             "unusable georeferencing"))
             continue
-        fit = l.get("fit") or {}
-        res = fit.get("residual_m")
-        if res is not None and res > cfg["max_residual_m"]:
-            rejected.append((l.get("key"), f"residual {res:.1f} m"))
-            continue
-        rings = [f["ring"] for f in (l.get("features") or [])
-                 if f.get("ring") and len(f["ring"]) >= 4]
-        if len(rings) < cfg["min_footprints"]:
-            rejected.append((l.get("key"), "no building rings"))
-            continue
-        usable.append((l, rings, d))
+        if d.residual_m is not None and d.residual_m > cfg["warn_residual_m"]:
+            warnings.append(f"siteplan {d.key}: georeferencing residual "
+                            f"{d.residual_m:.1f} m (> {cfg['warn_residual_m']:.0f} m)")
+        if d.date_provenance:
+            warnings.append(f"siteplan {d.key}: {d.date_provenance}")
+        usable.append(d)
 
-    for key, why in rejected:
-        warnings.append(f"siteplan sheet {key} rejected: {why}")
+    for key, why, kind in rejected:
+        warnings.append(f"siteplan {key} rejected ({kind}): {why}")
     if not usable:
         return None, (rejected[0][1] if rejected else "no usable sheet")
     return usable, None
@@ -127,33 +139,33 @@ def _from_siteplan(site, plan_layers, observation_date, cfg, warnings):
         return None, why
 
     from shapely.geometry import Polygon
-    polys, keys, dates = [], [], []
-    for l, rings, d in usable:
-        polys += [Polygon(r) for r in rings]
-        keys.append(l.get("key"))
-        dates.append(d)
+    polys, keys, gates, docs = [], [], [], []
+    for d in usable:
+        polys += [Polygon(r) for r in d.rings]
+        keys.append(d.key)
+        if d.usable_from:
+            gates.append(d.usable_from)
+        docs.append(d.as_dict())
 
     building = safe_union(polys)
     if building is None or building.is_empty:
-        return None, "footprint union empty"
+        return None, "footprint union empty"          # invalid geometry
+    if geodesic_area_m2(building) <= 0:
+        return None, "footprint area zero"
 
     lat = getattr(site, "lat", None) or building.centroid.y
     development = buffer_m(building, cfg["siteplan_buffer_m"], lat)
     context = buffer_m(development, cfg["context_buffer_m"], lat)
 
-    n_fp = len(polys)
-    if geodesic_area_m2(building) <= 0:
-        return None, "footprint area zero"
-
-    # sanity: does the plan sit anywhere near the recorded point?
     off = None
     if getattr(site, "lat", None) is not None:
         off = geodesic_distance_m(site.lon, site.lat,
                                   building.centroid.x, building.centroid.y)
         if off > cfg["max_point_offset_m"]:
-            warnings.append(
-                f"site plan centroid {off:.0f} m from the recorded point "
-                f"(> {cfg['max_point_offset_m']:.0f} m)")
+            return None, (f"site plan centroid {off:.0f} m from the point "
+                          f"— not the same place")
+        if off > cfg["warn_point_offset_m"]:
+            warnings.append(f"site plan centroid {off:.0f} m from the recorded point")
 
     return dict(
         geometry=context,
@@ -161,9 +173,11 @@ def _from_siteplan(site, plan_layers, observation_date, cfg, warnings):
         analysis_zones={"building": building, "development": development,
                         "context": context},
         buffer_m=cfg["siteplan_buffer_m"],
-        siteplan_date=max(dates).isoformat(),
+        siteplan_date=max(gates).isoformat() if gates else None,
         siteplan_keys=keys,
-        n_footprints=n_fp,
+        siteplan_docs=docs,
+        siteplan_policy=cfg.get("policy", "strict"),
+        n_footprints=len(polys),
         point_offset_m=off,
     ), None
 
@@ -173,19 +187,24 @@ def _from_siteplan(site, plan_layers, observation_date, cfg, warnings):
 # ---------------------------------------------------------------------------
 
 def _from_parcel(site, cfg, warnings):
-    """The parcel is kept as a SEARCH BOUNDARY, never collapsed to one mean.
+    """The parcel is a SEARCH BOUNDARY and is never rejected for being big.
 
-    Downstream work computes pixel-level change, connected components and
-    tiles INSIDE it -- that is the point of returning it whole. A large parcel
-    is flagged, not rejected, because rejecting it would throw away the only
-    boundary we have.
+    Size is a quality signal, not a disqualification: a 900 ha parcel is still
+    the only boundary that site has, and discarding it demotes the site to a
+    box on a coordinate that -- measured in this repo -- misses the actual
+    construction entirely on large campuses. Instead the parcel is kept whole
+    and flagged for TILED search, so localized components survive rather than
+    being averaged away.
+
+    Hard rejection is limited to geometry that is unusable: empty, unrepairable,
+    zero-area, or so far from the project point that one of the two is wrong.
     """
     src = getattr(site, "aoi_source", "") or ""
     if not src.startswith("parcel"):
         return None, f"no parcel geometry (aoi_source={src or 'none'})"
     geom = as_geom(getattr(site, "geometry", None))
     if geom is None or geom.is_empty:
-        return None, "parcel geometry empty"
+        return None, "parcel geometry empty"                    # invalid geometry
     if not geom.is_valid:
         geom = geom.buffer(0)
         warnings.append("parcel geometry was invalid; repaired with buffer(0)")
@@ -194,15 +213,15 @@ def _from_parcel(site, cfg, warnings):
 
     area = geodesic_area_m2(geom)
     if area <= 0:
-        return None, "parcel area zero"
+        return None, "parcel area zero"                         # invalid geometry
     ha = area / 1e4
 
-    if ha > cfg["max_parcel_ha"]:
-        return None, f"parcel {ha:.0f} ha exceeds max {cfg['max_parcel_ha']:.0f} ha"
+    needs_tiling = ha > cfg["tile_parcel_ha"]
     if ha > cfg["warn_parcel_ha"]:
-        warnings.append(f"parcel is large ({ha:.0f} ha): an 8,000 m2 event is "
-                        f"{8000/area*100:.2f}% of it — rely on the pixel-level "
-                        f"change map, not the parcel mean")
+        warnings.append(
+            f"parcel is large ({ha:,.0f} ha): an 8,000 m2 event is "
+            f"{8000/area*100:.3f}% of it — use the tiled component search, "
+            f"never the parcel mean")
 
     n_parts = len(geom.geoms) if geom.geom_type == "MultiPolygon" else 1
     if n_parts > 1:
@@ -215,10 +234,11 @@ def _from_parcel(site, cfg, warnings):
         if not geom.contains(pt):
             off = geodesic_distance_m(site.lon, site.lat,
                                       geom.centroid.x, geom.centroid.y)
+            if off > cfg["max_point_offset_m"]:
+                return None, (f"point {off:.0f} m outside the parcel — "
+                              f"not the same place")
             warnings.append(f"project point falls OUTSIDE the parcel "
                             f"({off:.0f} m from its centroid)")
-            if off > cfg["max_point_offset_m"]:
-                return None, f"point {off:.0f} m outside parcel"
 
     context = buffer_m(geom, cfg["context_buffer_m"], lat)
     return dict(
@@ -229,6 +249,9 @@ def _from_parcel(site, cfg, warnings):
         parcel_id=getattr(site, "unit_uid", None),
         n_parcel_parts=n_parts,
         point_offset_m=off,
+        needs_tiling=needs_tiling,
+        tile_px=cfg["tile_px"],
+        tile_overlap_px=cfg["tile_overlap_px"],
     ), None
 
 
@@ -316,15 +339,17 @@ def resolve_aoi(site, observation_date=None, plan_layers=None, config=None) -> d
         "warnings": warnings,
         "fallback_reason": "; ".join(reasons) if reasons else None,
     }
-    for k in ("siteplan_keys", "n_footprints", "n_parcel_parts",
-              "point_offset_m", "point_sizes_m"):
+    for k in ("siteplan_keys", "siteplan_docs", "siteplan_policy", "n_footprints",
+              "n_parcel_parts", "point_offset_m", "point_sizes_m",
+              "needs_tiling", "tile_px", "tile_overlap_px"):
         if k in out:
             rec[k] = out[k]
-    rec["confidence"] = _confidence(rec)
+    rec["quality"] = _quality(rec)
+    rec["confidence"] = rec["quality"]["score"]
     return rec
 
 
-def _confidence(rec) -> float:
+def _quality(rec) -> dict:
     """How much the GEOMETRY can be trusted -- not how likely construction is.
 
     Ordered by how directly the AOI localises the event: a drawn footprint beats
@@ -332,18 +357,27 @@ def _confidence(rec) -> float:
     in this repo as actually going wrong.
     """
     base = {"siteplan": 0.9, "parcel": 0.65, "point_box": 0.4}[rec["source"]]
+    deductions = []
     if rec["coordinate_quality"] == "approximate":
-        base -= 0.05
+        base -= 0.05; deductions.append(("coordinate approximate", -0.05))
     elif rec["coordinate_quality"] == "inferred":
-        base -= 0.15
+        base -= 0.15; deductions.append(("coordinate inferred", -0.15))
     for w in rec["warnings"]:
         if "OUTSIDE the parcel" in w or "from the recorded point" in w:
-            base -= 0.15
+            base -= 0.15; deductions.append(("point/polygon disagreement", -0.15))
         elif "fragmented" in w:
-            base -= 0.05
+            base -= 0.05; deductions.append(("fragmented parcel", -0.05))
         elif "is large" in w:
-            base -= 0.10
-    return round(max(0.05, min(1.0, base)), 3)
+            # a size penalty, NOT a rejection: the parcel is still searched,
+            # just by tiles rather than by its mean
+            base -= 0.10; deductions.append(("large parcel — tiled search", -0.10))
+        elif "residual" in w:
+            base -= 0.10; deductions.append(("weak georeferencing", -0.10))
+        elif "optimistic" in w:
+            base -= 0.05; deductions.append(("plan availability date optimistic", -0.05))
+    return {"score": round(max(0.05, min(1.0, base)), 3),
+            "base": {"siteplan": 0.9, "parcel": 0.65, "point_box": 0.4}[rec["source"]],
+            "deductions": deductions}
 
 
 def to_json(rec) -> dict:
@@ -366,6 +400,9 @@ def provenance(rec) -> dict:
         "aoi_area_m2": round(rec["area_m2"], 1),
         "aoi_buffer_m": rec["buffer_m"],
         "aoi_confidence": rec["confidence"],
+        "aoi_quality": rec.get("quality"),
+        "aoi_needs_tiling": rec.get("needs_tiling", False),
+        "siteplan_policy": rec.get("siteplan_policy"),
         "coordinate_quality": rec["coordinate_quality"],
         "siteplan_date": rec.get("siteplan_date"),
         "parcel_id": rec.get("parcel_id"),

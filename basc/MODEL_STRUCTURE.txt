@@ -439,3 +439,117 @@ EXTERNAL DEPENDENCIES NOT IN THIS REPO
   * Do not `pgrep -f` a pattern that matches the waiting shell's own command
     line. It matches itself and waits forever.
 ================================================================================
+
+
+================================================================================
+11. REVISION 2026-09-07b -- WHAT CHANGED AND WHY
+================================================================================
+
+11.1 LARGE PARCELS ARE TILED, NOT REJECTED
+The 800 ha cap is gone. Size is a QUALITY signal now: the parcel is kept whole
+as the search boundary, flagged needs_tiling above 100 ha, and searched by
+overlapping tiles (tiling.py). Tiles overlap because a disturbance on a seam
+would otherwise split into two sub-threshold fragments and be dropped by the
+very filter meant to prevent that. Components are merged by SHARED GLOBAL
+PIXELS via union-find, and the minimum-size filter is applied AFTER merging.
+Merged disturbances are ranked by area, shape and proximity.
+
+11.2 ROBUST AND RAW SCORES, BOTH REPORTED
+seasonal_baseline(robust=) returns median/MAD or mean/sd; anomaly_scores()
+returns both. The detector consumes the robust score; evaluation reports both,
+so the estimator choice is auditable rather than asserted.
+
+11.3 PERSISTENCE IS STRICTLY CAUSAL
+The old forward-looking persistence could not be computed for the most recent
+period -- the only period a queue cares about. detect.py walks observations in
+order and emits, per period, from observations at or before it only:
+
+    insufficient_evidence   too few clear looks. NOT the same as "no change":
+                            a snowed-in site is not a quiet site.
+    provisional_start       change present, not yet held long enough
+    confirmed_start         held across confirm_n consecutive clear looks
+
+Onset is dated to the FIRST sighting, not the confirming one. Cloud HOLDS a run
+rather than breaking it -- an unobserved period is not counter-evidence. A
+provisional call is a real output that upgrades in place when imagery arrives.
+
+11.4 FOUNDATIONS NEED MULTIPLE EVIDENCE
+15% is never called from brightness. Wu & Murray's high-albedo endmember
+absorbs concrete, sand AND cloud, and this repo measured that fraction
+anti-correlating with valid-pixel count at -0.37 to -0.42 -- it is partly a
+cloud detector. 15% now requires foundation_min_evidence (default 4) of:
+bright area, connected area, persistence, geometry, footprint proximity, prior
+vegetation loss, visual confirmation -- over worked ground. With partial
+evidence the model returns stage_group="10-15" and lower confidence rather than
+guessing. Abstention is a supported output, not a failure.
+
+11.5 GROUND TRUTH IS AN INTERVAL
+truth.py brackets the start between the last confirmed-unchanged and the first
+confirmed-changed observation. The REPORTED date is kept separately with its
+own source and confidence and is never merged in. This matters because the
+bracket is often wide: 69% clear overall, but 35% in January and 48% in
+February -- the two months carrying 25.4% of all reported starts. Scoring to
+the fortnight against a date that was never that precise manufactures both
+false earliness and false lateness.
+
+11.6 QUALITY SCORES REPLACE MOST HARD REJECTIONS
+Only three things still reject a level outright: invalid geometry, unusable
+georeferencing (residual > 60 m, ~6 pixels), and temporal leakage. Parcel size,
+fragmentation, weak-but-usable georeferencing and point offset now deduct from
+a quality score and raise warnings, itemised in rec["quality"]["deductions"].
+
+11.7 SITE-PLAN METADATA IS RICHER, AND STRICT IS PRIMARY
+siteplan_meta.PlanDoc separates document_date, revision_date, public_date,
+plan_type and usable_from. usable_from is the LATEST known date, because a
+detector cannot hold a document before it exists nor a filing before it is
+filed. Two policies:
+    strict  (default, primary evaluation) usable_from <= observation date
+    relaxed (SENSITIVITY ONLY, labelled in every record via siteplan_policy)
+            allows document_date, on the argument that these are drawings of
+            proposed buildings
+An as_built plan is never usable under either policy -- it records what was
+built, so using it to find construction is circular. plan-meta.json currently
+supplies only sheet_date, so public_date is unknown and every such record
+carries "usable_from is optimistic" in date_provenance.
+
+
+================================================================================
+12. WHAT A VALID 0/5/10/15 DATASET STILL REQUIRES
+================================================================================
+
+None of the stage thresholds are fitted, because nothing here can fit them.
+What is missing, in order of how much it blocks:
+
+12.1 STAGE LABELS AT ALL. The 240 verified records carry a START DATE, not a
+     stage. There is no example anywhere in this repo of a labelled "grading"
+     or "foundation" observation. Every threshold in stage.py is therefore a
+     legible guess. Needed: per site, per fortnight, a reviewed label in
+     {0,5,10,15} with the interpreter's confidence and the imagery they used.
+
+12.2 NEGATIVES. There is still no non-starting comparison set in this analysis.
+     Without it, no precision, no false-alarm rate, and no lift statement is
+     computable -- only within-site season-matched contrasts. The 150 parcels
+     in results/negative_parcels.json are identified but have never been
+     fetched at pixel level.
+
+12.3 INTERVAL TRUTH, NOT DATES. Section 11.5 gives the structure; it needs
+     populating from reviewed imagery, which means an interpreter recording
+     the last-unchanged and first-changed observations rather than one date.
+
+12.4 A RESOLUTION HONESTY CHECK. Whether 10% and 15% are separable at 10 m is
+     an open empirical question, not an assumption. It needs a set of sites
+     with high-resolution confirmation of pour dates, scored against what the
+     Sentinel-2 features said. If they are not separable, the correct product
+     is the 10-15 group and the four-stage ladder should collapse to three.
+
+12.5 STRATIFICATION THAT MATCHES THE PORTFOLIO. The 16 site-plan campuses are
+     not a random sample of the 240: campuses with municipal filings on file
+     skew large and well documented. Any dataset built from them describes the
+     detectable end of the portfolio. Stage labels must be sampled across AOI
+     source (siteplan / parcel / point_box), parcel size, region and season --
+     especially season, given the Jan-Feb clear-rate problem.
+
+12.6 A DECISION ON THE RELAXED POLICY. Whether a plan filed after construction
+     began still represents pre-construction intent is a judgement about the
+     source documents that nobody in this repo is positioned to make. Until it
+     is made, strict is primary and relaxed is reported separately.

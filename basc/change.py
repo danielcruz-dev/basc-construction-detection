@@ -51,11 +51,17 @@ DEFAULTS = dict(
 # baseline
 # ---------------------------------------------------------------------------
 
-def seasonal_baseline(by_ord: dict[int, np.ndarray], target: int, cfg) -> tuple:
-    """(median, sigma, n_obs) per pixel from the same season in earlier years.
+def seasonal_baseline(by_ord: dict[int, np.ndarray], target: int, cfg,
+                      robust: bool = True) -> tuple:
+    """(centre, scale, n_obs) per pixel from the same season in earlier years.
 
-    by_ord maps period ordinal -> (H,W) array of one fraction, NaN where the
-    pixel was not clear.
+    robust=True  -> median and MAD-scaled sigma  (the default, and what the
+                    detector uses: one missed cloud in a baseline year would
+                    otherwise drag the mean and inflate sd, suppressing real
+                    change exactly where the history is worst)
+    robust=False -> mean and standard deviation  (the RAW score, computed
+                    alongside so evaluation can report both and the choice can
+                    be audited rather than asserted)
     """
     slots = []
     for y in cfg["baseline_years"]:
@@ -66,17 +72,41 @@ def seasonal_baseline(by_ord: dict[int, np.ndarray], target: int, cfg) -> tuple:
     if len(slots) < cfg["min_baseline_obs"]:
         return None, None, 0
     A = np.stack(slots)                                   # (T,H,W)
-    # A pixel that was never clear in ANY baseline year is all-NaN; nanmedian
-    # warns and returns NaN, which is the right answer -- change_mask requires
+    # A pixel never clear in ANY baseline year is all-NaN; nanmedian warns and
+    # returns NaN, which is the right answer -- change_mask requires
     # n_obs >= min_baseline_obs, so those pixels are excluded rather than
     # guessed at. Suppress the warning, not the behaviour.
     with np.errstate(all="ignore"), warnings.catch_warnings():
         warnings.simplefilter("ignore", RuntimeWarning)
-        med = np.nanmedian(A, axis=0)
-        mad = np.nanmedian(np.abs(A - med), axis=0)
-    sigma = np.maximum(1.4826 * mad, cfg["sigma_floor"])
+        if robust:
+            centre = np.nanmedian(A, axis=0)
+            mad = np.nanmedian(np.abs(A - centre), axis=0)
+            scale = np.maximum(1.4826 * mad, cfg["sigma_floor"])
+        else:
+            centre = np.nanmean(A, axis=0)
+            scale = np.maximum(np.nanstd(A, axis=0), cfg["sigma_floor"])
     n = np.sum(~np.isnan(A), axis=0)
-    return med, sigma, n
+    return centre, scale, n
+
+
+def anomaly_scores(by_ord, target, cfg):
+    """Both scores for one fraction: {'robust': z, 'raw': z, ...}.
+
+    Reported together during evaluation so the effect of the robust estimator
+    is visible rather than assumed. The detector consumes 'robust'.
+    """
+    cur = by_ord.get(target)
+    if cur is None:
+        return None
+    out = {}
+    for name, rb in (("robust", True), ("raw", False)):
+        c, s, n = seasonal_baseline(by_ord, target, cfg, robust=rb)
+        if c is None:
+            out[name] = None
+            continue
+        with np.errstate(all="ignore"):
+            out[name] = {"z": (cur - c) / s, "centre": c, "scale": s, "n_obs": n}
+    return out
 
 
 def change_mask(cur, med, sigma, n_obs, cfg, direction="up"):

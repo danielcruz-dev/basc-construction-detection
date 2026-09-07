@@ -24,10 +24,13 @@ import os
 import numpy as np
 
 import change
+import detect
 import stage as stage_mod
+import tiling
+from truth import bracket_from_detections
 from basc_lsma import EM_NAMES, load_stack, unmix
 from geo_utils import as_geom, pixel_area_m2, rasterize
-from replay import ordn
+from replay import ordn, unordn as unordn_
 
 FRACTION_INDEX = {n: i for i, n in enumerate(EM_NAMES)}
 
@@ -70,7 +73,10 @@ def fraction_cube(site_dir, g, M):
     return cube
 
 
-def run_site(site_dir, M, cfg, persist_ahead=4):
+def run_site(site_dir, M, cfg, persist_ahead=None):
+    """persist_ahead is retained only for backwards compatibility and is
+    ignored: persistence is now strictly causal (backward-looking), so a
+    prediction at t never consults an observation after t."""
     g = json.load(open(os.path.join(site_dir, "grid.json")))
     bbox, W, H = g["bbox"], g["width"], g["height"]
     px_area = pixel_area_m2(bbox, W, H)
@@ -101,31 +107,80 @@ def run_site(site_dir, M, cfg, persist_ahead=4):
         layers[o] = L
         combined[o] = L["new_soil"] | L["new_high"]
 
+    # --- causal detection over the development zone -------------------------
+    dev_mask = zmasks.get("development")
+    prior_veg = {}
+    veg_run = 0.0
+    series = []
+    for o in ords:
+        ch = combined[o] & (dev_mask if dev_mask is not None else True)
+        vl = layers[o]["veg_loss"] & (dev_mask if dev_mask is not None else True)
+        veg_run = max(veg_run, float(vl.sum()) * px_area)
+        prior_veg[o] = veg_run          # only ever accumulates from the PAST
+        series.append({"period": unordn_(o), "clear": True,
+                       "changed": bool(ch.sum() * px_area >= cfg.get("mmu_m2", 8000.0))})
+    dets = detect.run_causal(series)
+    det_by = {d.period: d for d in dets}
+
+    tiled = None
+    if prov.get("aoi_needs_tiling") and dev_mask is not None:
+        tiled = {}
+        for o in ords:
+            lab, cr = tiling.tiled_components(
+                combined[o] & dev_mask,
+                tile_px=prov.get("tile_px") or 64,
+                overlap_px=prov.get("tile_overlap_px") or 16,
+                min_px=cfg["min_component_px"])
+            tiled[o] = tiling.rank_disturbances(lab, cr, px_area,
+                                                building_geom=building, point=point,
+                                                bbox=bbox, width=W, height=H,
+                                                top_k=5)
+
     recs = []
     for i, o in enumerate(ords):
-        later = [combined[x] for x in ords[i + 1:i + 1 + persist_ahead]]
+        # BACKWARD persistence only: observations at or before this period
+        pers = detect.causal_persistence(series, i)
         for zname, zm in zmasks.items():
             f = change.zone_features(zm, layers[o], px_area, bbox, W, H,
                                      building_geom=building, point=point,
-                                     cfg=cfg, persistence_masks=later or None)
+                                     cfg=cfg, persistence_masks=None)
+            f.persistence = pers
             f.zone = zname
             d = f.as_dict()
+            d["prior_veg_loss_m2"] = prior_veg.get(o)
+            d["visual_confirmed"] = None
             if zname == "development":
+                dd = det_by.get(unordn_(o))
+                if dd is not None:
+                    d["detection_state"] = dd.state
+                    d["provisional_period"] = dd.provisional_period
+                    d["confirmed_period"] = dd.confirmed_period
+                    d["n_clear_seen"] = dd.n_clear_seen
+                if tiled is not None:
+                    d["tiled_top_disturbances"] = tiled.get(o, [])
                 sc = stage_mod.classify(d, aoi_source=prov.get("aoi_source"))
                 d["stage_pct"] = sc.stage_pct
+                d["stage_group"] = sc.stage_group
                 d["stage_label"] = sc.label
                 d["stage_confidence"] = sc.confidence
                 d["stage_reasons"] = sc.reasons
             d["period"] = None
             recs.append({"period_ord": o, "zone": zname, **d, **prov})
-    # attach human-readable periods
-    from replay import unordn
     for r in recs:
-        r["period"] = unordn(r["period_ord"])
+        r["period"] = unordn_(r["period_ord"])
         r.pop("period_ord", None)
+
+    from acd_core import period_bounds
+    interval = bracket_from_detections(
+        g.get("uid", "?"), dets, period_bounds,
+        reported_date=None, reported_period=g.get("start_period"),
+        reported_source="reviewer")
     return {"site": {k: g.get(k) for k in ("uid", "name", "state", "start_period")},
             "aoi_provenance": prov, "px_area_m2": px_area,
-            "n_periods": len(ords), "records": recs}
+            "n_periods": len(ords),
+            "start_interval": interval.as_dict(),
+            "detections": [d.as_dict() for d in dets],
+            "records": recs}
 
 
 def main() -> None:
@@ -156,9 +211,12 @@ def main() -> None:
         json.dump(res, open(os.path.join(a.out, os.path.basename(d) + ".json"), "w"),
                   indent=1)
         dev = [r for r in res["records"] if r["zone"] == "development"]
-        staged = [r for r in dev if r.get("stage_pct", 0) > 0]
-        print(f"  {os.path.basename(d)[:44]:<44} AOI={res['aoi_provenance'].get('aoi_source','?'):<9}"
-              f" {res['n_periods']:3d} periods, {len(staged):3d} with stage>0")
+        staged = [r for r in dev if (r.get("stage_pct") or 0) > 0]
+        abstain = [r for r in dev if r.get("stage_group") == "10-15"]
+        si = res["start_interval"]
+        print(f"  {os.path.basename(d)[:40]:<40} AOI={res['aoi_provenance'].get('aoi_source','?'):<9}"
+              f" {res['n_periods']:3d}p  stage>0 {len(staged):3d}  abstain {len(abstain):3d}"
+              f"  interval {si.get('last_unchanged_period')}..{si.get('first_changed_period')}")
 
 
 if __name__ == "__main__":

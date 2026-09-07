@@ -110,12 +110,27 @@ class TestPriority(unittest.TestCase):
         self.assertEqual(r["source"], "point_box")
         self.assertIn("parcel:", r["fallback_reason"])
 
-    def test_oversized_parcel_falls_back(self):
-        huge = square_at(self.lat, self.lon, 4000)     # 1,600 ha > 800 ha cap
+    def test_oversized_parcel_is_KEPT_and_tiled(self):
+        """Revised policy: size is a quality signal, never a rejection. A huge
+        parcel stays as the search boundary and is flagged for tiled search."""
+        huge = square_at(self.lat, self.lon, 4000)          # 1,600 ha
         s = FakeSite(lat=self.lat, lon=self.lon, geometry=huge, aoi_source="parcel")
         r = resolve_aoi(s, observation_date="2025-06-01", plan_layers=[])
+        self.assertEqual(r["source"], "parcel")
+        self.assertTrue(r["needs_tiling"])
+        self.assertTrue(any("large" in w for w in r["warnings"]))
+        self.assertLess(r["confidence"], 0.65)      # penalised, not discarded
+        self.assertTrue(any(d[0].startswith("large parcel")
+                            for d in r["quality"]["deductions"]))
+
+    def test_point_far_outside_parcel_is_hard_rejected(self):
+        """One of the three surviving hard rejections: the point and the
+        polygon are not the same place, so one of them is wrong."""
+        far = G.ground_square(self.lat + 0.2, self.lon + 0.2, 500)
+        s = FakeSite(lat=self.lat, lon=self.lon, geometry=far, aoi_source="parcel")
+        r = resolve_aoi(s, observation_date="2025-06-01", plan_layers=[])
         self.assertEqual(r["source"], "point_box")
-        self.assertIn("exceeds max", r["fallback_reason"])
+        self.assertIn("not the same place", r["fallback_reason"])
 
 
 class TestTemporalLeakage(unittest.TestCase):

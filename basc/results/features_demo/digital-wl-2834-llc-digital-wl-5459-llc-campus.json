@@ -10,6 +10,972 @@
  },
  "px_area_m2": 100.2004341693269,
  "n_periods": 85,
+ "start_interval": {
+  "campus_uid": "bda06ff0-29d0-11f0-82cd-25e7d375563e",
+  "last_unchanged_period": "2024-02-H1",
+  "first_changed_period": "2024-02-H2",
+  "last_unchanged_date": "2024-02-01",
+  "first_changed_date": "2024-03-01",
+  "reported_date": null,
+  "reported_period": "2025-06-H1",
+  "reported_source": "reviewer",
+  "reported_confidence": null,
+  "interval_source": "imagery_bracket",
+  "n_clear_before": 34,
+  "n_clear_after": 49,
+  "notes": [],
+  "width_days": 29,
+  "is_bounded": true
+ },
+ "detections": [
+  {
+   "period": "2023-01-H1",
+   "state": "insufficient_evidence",
+   "changed_now": false,
+   "n_clear_seen": 1,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": [
+    "only 1 clear look(s); need 3"
+   ]
+  },
+  {
+   "period": "2023-02-H1",
+   "state": "insufficient_evidence",
+   "changed_now": false,
+   "n_clear_seen": 2,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": [
+    "only 2 clear look(s); need 3"
+   ]
+  },
+  {
+   "period": "2023-02-H2",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 3,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-03-H1",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 4,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-03-H2",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 5,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-04-H1",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 6,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-04-H2",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 7,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-05-H1",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 8,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-05-H2",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 9,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-06-H1",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 10,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-06-H2",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 11,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-07-H1",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 12,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-07-H2",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 13,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-08-H1",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 14,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-08-H2",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 15,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-09-H1",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 16,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-09-H2",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 17,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-10-H1",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 18,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-10-H2",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 19,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-11-H1",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 20,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-11-H2",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 21,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-12-H1",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 22,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2023-12-H2",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 23,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-01-H1",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 24,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-02-H1",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 25,
+   "run_len": 0,
+   "provisional_period": null,
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-02-H2",
+   "state": "provisional_start",
+   "changed_now": true,
+   "n_clear_seen": 26,
+   "run_len": 1,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": null,
+   "evidence": {},
+   "notes": [
+    "changed at 1/2 consecutive clear looks \u2014 actionable now, confirmable later"
+   ]
+  },
+  {
+   "period": "2024-03-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 27,
+   "run_len": 2,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-04-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 28,
+   "run_len": 3,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-04-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 29,
+   "run_len": 4,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-05-H2",
+   "state": "confirmed_start",
+   "changed_now": false,
+   "n_clear_seen": 30,
+   "run_len": 4,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-06-H1",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 31,
+   "run_len": 0,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-06-H2",
+   "state": "provisional_start",
+   "changed_now": true,
+   "n_clear_seen": 32,
+   "run_len": 1,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": [
+    "changed at 1/2 consecutive clear looks \u2014 actionable now, confirmable later"
+   ]
+  },
+  {
+   "period": "2024-07-H1",
+   "state": "provisional_start",
+   "changed_now": false,
+   "n_clear_seen": 33,
+   "run_len": 1,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": [
+    "changed at 1/2 consecutive clear looks \u2014 actionable now, confirmable later"
+   ]
+  },
+  {
+   "period": "2024-07-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 34,
+   "run_len": 2,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-08-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 35,
+   "run_len": 3,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-08-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 36,
+   "run_len": 4,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-09-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 37,
+   "run_len": 5,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-09-H2",
+   "state": "confirmed_start",
+   "changed_now": false,
+   "n_clear_seen": 38,
+   "run_len": 5,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-10-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 39,
+   "run_len": 6,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-10-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 40,
+   "run_len": 7,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-11-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 41,
+   "run_len": 8,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-11-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 42,
+   "run_len": 9,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-12-H1",
+   "state": "confirmed_start",
+   "changed_now": false,
+   "n_clear_seen": 43,
+   "run_len": 9,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2024-12-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 44,
+   "run_len": 10,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-01-H1",
+   "state": "confirmed_start",
+   "changed_now": false,
+   "n_clear_seen": 45,
+   "run_len": 10,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-01-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 46,
+   "run_len": 11,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-02-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 47,
+   "run_len": 12,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-02-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 48,
+   "run_len": 13,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-03-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 49,
+   "run_len": 14,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-03-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 50,
+   "run_len": 15,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-04-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 51,
+   "run_len": 16,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-04-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 52,
+   "run_len": 17,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-05-H1",
+   "state": "confirmed_start",
+   "changed_now": false,
+   "n_clear_seen": 53,
+   "run_len": 17,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-05-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 54,
+   "run_len": 18,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-06-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 55,
+   "run_len": 19,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-06-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 56,
+   "run_len": 20,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-07-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 57,
+   "run_len": 21,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-07-H2",
+   "state": "confirmed_start",
+   "changed_now": false,
+   "n_clear_seen": 58,
+   "run_len": 21,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-08-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 59,
+   "run_len": 22,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-08-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 60,
+   "run_len": 23,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-09-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 61,
+   "run_len": 24,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-09-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 62,
+   "run_len": 25,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-10-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 63,
+   "run_len": 26,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-10-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 64,
+   "run_len": 27,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-11-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 65,
+   "run_len": 28,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-11-H2",
+   "state": "confirmed_start",
+   "changed_now": false,
+   "n_clear_seen": 66,
+   "run_len": 28,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-12-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 67,
+   "run_len": 29,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2025-12-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 68,
+   "run_len": 30,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2026-01-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 69,
+   "run_len": 31,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2026-01-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 70,
+   "run_len": 32,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2026-02-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 71,
+   "run_len": 33,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2026-02-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 72,
+   "run_len": 34,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2026-03-H1",
+   "state": "confirmed_start",
+   "changed_now": false,
+   "n_clear_seen": 73,
+   "run_len": 34,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2026-03-H2",
+   "state": "no_change",
+   "changed_now": false,
+   "n_clear_seen": 74,
+   "run_len": 0,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2026-04-H1",
+   "state": "provisional_start",
+   "changed_now": true,
+   "n_clear_seen": 75,
+   "run_len": 1,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": [
+    "changed at 1/2 consecutive clear looks \u2014 actionable now, confirmable later"
+   ]
+  },
+  {
+   "period": "2026-04-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 76,
+   "run_len": 2,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2026-05-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 77,
+   "run_len": 3,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2026-05-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 78,
+   "run_len": 4,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2026-06-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 79,
+   "run_len": 5,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2026-06-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 80,
+   "run_len": 6,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2026-07-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 81,
+   "run_len": 7,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2026-07-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 82,
+   "run_len": 8,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2026-08-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 83,
+   "run_len": 9,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2026-08-H2",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 84,
+   "run_len": 10,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  },
+  {
+   "period": "2026-09-H1",
+   "state": "confirmed_start",
+   "changed_now": true,
+   "n_clear_seen": 85,
+   "run_len": 11,
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "evidence": {},
+   "notes": []
+  }
+ ],
  "records": [
   {
    "zone": "development",
@@ -27,11 +993,18 @@
    "dist_to_building_m": null,
    "dist_to_point_m": null,
    "persistence": null,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "insufficient_evidence",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 1,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-01-H1",
    "aoi_source": "unknown"
@@ -51,12 +1024,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "insufficient_evidence",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 2,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-02-H1",
    "aoi_source": "unknown"
@@ -76,12 +1056,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 3,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-02-H2",
    "aoi_source": "unknown"
@@ -101,12 +1088,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 4,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-03-H1",
    "aoi_source": "unknown"
@@ -126,12 +1120,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 5,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-03-H2",
    "aoi_source": "unknown"
@@ -151,12 +1152,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 6,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-04-H1",
    "aoi_source": "unknown"
@@ -176,12 +1184,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 7,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-04-H2",
    "aoi_source": "unknown"
@@ -201,12 +1216,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 8,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-05-H1",
    "aoi_source": "unknown"
@@ -226,12 +1248,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 9,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-05-H2",
    "aoi_source": "unknown"
@@ -251,12 +1280,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 10,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-06-H1",
    "aoi_source": "unknown"
@@ -276,12 +1312,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 11,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-06-H2",
    "aoi_source": "unknown"
@@ -301,12 +1344,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 12,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-07-H1",
    "aoi_source": "unknown"
@@ -326,12 +1376,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 13,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-07-H2",
    "aoi_source": "unknown"
@@ -351,12 +1408,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 14,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-08-H1",
    "aoi_source": "unknown"
@@ -376,12 +1440,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 15,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-08-H2",
    "aoi_source": "unknown"
@@ -401,12 +1472,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 16,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-09-H1",
    "aoi_source": "unknown"
@@ -426,12 +1504,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 17,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-09-H2",
    "aoi_source": "unknown"
@@ -451,12 +1536,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 18,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-10-H1",
    "aoi_source": "unknown"
@@ -476,12 +1568,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 19,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-10-H2",
    "aoi_source": "unknown"
@@ -501,12 +1600,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 20,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-11-H1",
    "aoi_source": "unknown"
@@ -526,12 +1632,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 21,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-11-H2",
    "aoi_source": "unknown"
@@ -551,12 +1664,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 22,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-12-H1",
    "aoi_source": "unknown"
@@ -576,12 +1696,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 23,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2023-12-H2",
    "aoi_source": "unknown"
@@ -601,12 +1728,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 24,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2024-01-H1",
    "aoi_source": "unknown"
@@ -626,12 +1760,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.0,
+   "prior_veg_loss_m2": 0.0,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": null,
+   "confirmed_period": null,
+   "n_clear_seen": 25,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2024-02-H1",
    "aoi_source": "unknown"
@@ -651,12 +1792,19 @@
    "largest_component_rectangularity": 0.5495,
    "dist_to_building_m": null,
    "dist_to_point_m": 534.1,
-   "persistence": 0.5,
-   "stage_pct": 15,
-   "stage_label": "foundation work",
-   "stage_confidence": 0.66,
+   "persistence": 0.333,
+   "prior_veg_loss_m2": 11422.849495303266,
+   "visual_confirmed": null,
+   "detection_state": "provisional_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": null,
+   "n_clear_seen": 26,
+   "stage_pct": 0,
+   "stage_group": null,
+   "stage_label": "no construction",
+   "stage_confidence": 0.55,
    "stage_reasons": [
-    "high-albedo 15,832 m2 over soil 87,275 m2"
+    "change did not persist (0.33 < 0.50) \u2014 transient, likely agricultural or moisture"
    ],
    "period": "2024-02-H2",
    "aoi_source": "unknown"
@@ -676,12 +1824,19 @@
    "largest_component_rectangularity": 0.4648,
    "dist_to_building_m": null,
    "dist_to_point_m": 487.7,
-   "persistence": 0.25,
-   "stage_pct": 0,
-   "stage_label": "no construction",
-   "stage_confidence": 0.55,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 11422.849495303266,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 27,
+   "stage_pct": 15,
+   "stage_group": null,
+   "stage_label": "foundation work",
+   "stage_confidence": 0.703,
    "stage_reasons": [
-    "change did not persist (persistence 0.25 < 0.50) \u2014 transient, likely agricultural or moisture"
+    "foundation: 4 independent signals (bright_area, connected_area, persistence, prior_veg_loss, worked_ground)"
    ],
    "period": "2024-03-H2",
    "aoi_source": "unknown"
@@ -701,12 +1856,19 @@
    "largest_component_rectangularity": 0.4292,
    "dist_to_building_m": null,
    "dist_to_point_m": 475.4,
-   "persistence": 0.0,
-   "stage_pct": 0,
-   "stage_label": "no construction",
-   "stage_confidence": 0.55,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 11422.849495303266,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 28,
+   "stage_pct": 15,
+   "stage_group": null,
+   "stage_label": "foundation work",
+   "stage_confidence": 0.796,
    "stage_reasons": [
-    "change did not persist (persistence 0.00 < 0.50) \u2014 transient, likely agricultural or moisture"
+    "foundation: 4 independent signals (bright_area, connected_area, persistence, prior_veg_loss, worked_ground)"
    ],
    "period": "2024-04-H1",
    "aoi_source": "unknown"
@@ -726,12 +1888,19 @@
    "largest_component_rectangularity": 0.5985,
    "dist_to_building_m": null,
    "dist_to_point_m": 544.1,
-   "persistence": 0.0,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 11422.849495303266,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 29,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 7,916 m2 and vegetation loss 1,303 m2 are both below the 8,000 m2 minimum"
+    "largest component 7,916 m2 and vegetation loss 1,303 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2024-04-H2",
    "aoi_source": "unknown"
@@ -751,10 +1920,17 @@
    "largest_component_rectangularity": 0.5185,
    "dist_to_building_m": null,
    "dist_to_point_m": 564.7,
-   "persistence": 1.0,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 12525.054271165862,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 30,
    "stage_pct": 5,
+   "stage_group": null,
    "stage_label": "site clearing",
-   "stage_confidence": 0.654,
+   "stage_confidence": 0.554,
    "stage_reasons": [
     "vegetation loss 12,525 m2, soil 3,707 m2, no dominant graded pad yet"
    ],
@@ -776,12 +1952,19 @@
    "largest_component_rectangularity": 0.6167,
    "dist_to_building_m": null,
    "dist_to_point_m": 565.1,
-   "persistence": 1.0,
+   "persistence": 0.333,
+   "prior_veg_loss_m2": 12525.054271165862,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 31,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 3,707 m2 and vegetation loss 5,110 m2 are both below the 8,000 m2 minimum"
+    "largest component 3,707 m2 and vegetation loss 5,110 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2024-06-H1",
    "aoi_source": "unknown"
@@ -801,12 +1984,19 @@
    "largest_component_rectangularity": 0.4595,
    "dist_to_building_m": null,
    "dist_to_point_m": 414.3,
-   "persistence": 0.0,
+   "persistence": 0.333,
+   "prior_veg_loss_m2": 41883.78148277864,
+   "visual_confirmed": null,
+   "detection_state": "provisional_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 32,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.55,
    "stage_reasons": [
-    "change did not persist (persistence 0.00 < 0.50) \u2014 transient, likely agricultural or moisture"
+    "change did not persist (0.33 < 0.50) \u2014 transient, likely agricultural or moisture"
    ],
    "period": "2024-06-H2",
    "aoi_source": "unknown"
@@ -826,12 +2016,19 @@
    "largest_component_rectangularity": 0.5714,
    "dist_to_building_m": null,
    "dist_to_point_m": 568.4,
-   "persistence": 1.0,
+   "persistence": 0.333,
+   "prior_veg_loss_m2": 41883.78148277864,
+   "visual_confirmed": null,
+   "detection_state": "provisional_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 33,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 2,405 m2 and vegetation loss 1,002 m2 are both below the 8,000 m2 minimum"
+    "largest component 2,405 m2 and vegetation loss 1,002 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2024-07-H1",
    "aoi_source": "unknown"
@@ -851,10 +2048,17 @@
    "largest_component_rectangularity": 0.4883,
    "dist_to_building_m": null,
    "dist_to_point_m": 604.9,
-   "persistence": 0.75,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 54308.63531977518,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 34,
    "stage_pct": 5,
+   "stage_group": null,
    "stage_label": "site clearing",
-   "stage_confidence": 0.573,
+   "stage_confidence": 0.548,
    "stage_reasons": [
     "vegetation loss 54,309 m2, soil 18,537 m2, no dominant graded pad yet"
    ],
@@ -876,10 +2080,17 @@
    "largest_component_rectangularity": 0.5349,
    "dist_to_building_m": null,
    "dist_to_point_m": 599.9,
-   "persistence": 0.5,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 54308.63531977518,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 35,
    "stage_pct": 5,
+   "stage_group": null,
    "stage_label": "site clearing",
-   "stage_confidence": 0.507,
+   "stage_confidence": 0.557,
    "stage_reasons": [
     "vegetation loss 15,731 m2, soil 21,844 m2, no dominant graded pad yet"
    ],
@@ -901,12 +2112,19 @@
    "largest_component_rectangularity": 0.7924,
    "dist_to_building_m": null,
    "dist_to_point_m": 591.6,
-   "persistence": 0.25,
-   "stage_pct": 0,
-   "stage_label": "no construction",
-   "stage_confidence": 0.55,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 54308.63531977518,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 36,
+   "stage_pct": 10,
+   "stage_group": null,
+   "stage_label": "grading and levelling",
+   "stage_confidence": 0.838,
    "stage_reasons": [
-    "change did not persist (persistence 0.25 < 0.50) \u2014 transient, likely agricultural or moisture"
+    "soil 16,934 m2 is 99% of the changed area, rectangularity 0.79"
    ],
    "period": "2024-08-H2",
    "aoi_source": "unknown"
@@ -926,12 +2144,19 @@
    "largest_component_rectangularity": 0.3506,
    "dist_to_building_m": null,
    "dist_to_point_m": 546.7,
-   "persistence": 0.0,
-   "stage_pct": 0,
-   "stage_label": "no construction",
-   "stage_confidence": 0.55,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 37,
+   "stage_pct": 15,
+   "stage_group": null,
+   "stage_label": "foundation work",
+   "stage_confidence": 0.78,
    "stage_reasons": [
-    "change did not persist (persistence 0.00 < 0.50) \u2014 transient, likely agricultural or moisture"
+    "foundation: 4 independent signals (bright_area, connected_area, persistence, prior_veg_loss, worked_ground)"
    ],
    "period": "2024-09-H1",
    "aoi_source": "unknown"
@@ -951,12 +2176,19 @@
    "largest_component_rectangularity": 0.7321,
    "dist_to_building_m": null,
    "dist_to_point_m": 574.3,
-   "persistence": 0.0,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 38,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 3,006 m2 and vegetation loss 2,405 m2 are both below the 8,000 m2 minimum"
+    "largest component 3,006 m2 and vegetation loss 2,405 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2024-09-H2",
    "aoi_source": "unknown"
@@ -976,12 +2208,19 @@
    "largest_component_rectangularity": 0.8132,
    "dist_to_building_m": null,
    "dist_to_point_m": 612.8,
-   "persistence": 0.75,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 39,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.788,
+   "stage_confidence": 0.803,
    "stage_reasons": [
-    "high-albedo 4,409 m2 over soil 20,140 m2"
+    "foundation: 5 independent signals (bright_area, connected_area, persistence, geometry, prior_veg_loss, worked_ground)"
    ],
    "period": "2024-10-H1",
    "aoi_source": "unknown"
@@ -1001,12 +2240,19 @@
    "largest_component_rectangularity": 0.6696,
    "dist_to_building_m": null,
    "dist_to_point_m": 611.2,
-   "persistence": 0.75,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 40,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.759,
+   "stage_confidence": 0.774,
    "stage_reasons": [
-    "high-albedo 6,814 m2 over soil 42,585 m2"
+    "foundation: 5 independent signals (bright_area, connected_area, persistence, geometry, prior_veg_loss, worked_ground)"
    ],
    "period": "2024-10-H2",
    "aoi_source": "unknown"
@@ -1026,12 +2272,19 @@
    "largest_component_rectangularity": 0.5676,
    "dist_to_building_m": null,
    "dist_to_point_m": 611.8,
-   "persistence": 0.5,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 41,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.664,
+   "stage_confidence": 0.824,
    "stage_reasons": [
-    "high-albedo 2,505 m2 over soil 63,527 m2"
+    "foundation: 4 independent signals (bright_area, connected_area, persistence, prior_veg_loss, worked_ground)"
    ],
    "period": "2024-11-H1",
    "aoi_source": "unknown"
@@ -1051,12 +2304,19 @@
    "largest_component_rectangularity": 0.8651,
    "dist_to_building_m": null,
    "dist_to_point_m": 590.7,
-   "persistence": 0.75,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 42,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.798,
+   "stage_confidence": 0.883,
    "stage_reasons": [
-    "high-albedo 3,006 m2 over soil 31,162 m2"
+    "foundation: 4 independent signals (bright_area, persistence, geometry, prior_veg_loss, worked_ground)"
    ],
    "period": "2024-11-H2",
    "aoi_source": "unknown"
@@ -1076,12 +2336,19 @@
    "largest_component_rectangularity": 0.7748,
    "dist_to_building_m": null,
    "dist_to_point_m": 630.5,
-   "persistence": 0.75,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 43,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 4,309 m2 and vegetation loss 200 m2 are both below the 8,000 m2 minimum"
+    "largest component 4,309 m2 and vegetation loss 200 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2024-12-H1",
    "aoi_source": "unknown"
@@ -1101,12 +2368,19 @@
    "largest_component_rectangularity": 0.7264,
    "dist_to_building_m": null,
    "dist_to_point_m": 598.3,
-   "persistence": 0.75,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 44,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.77,
+   "stage_confidence": 0.785,
    "stage_reasons": [
-    "high-albedo 5,611 m2 over soil 14,429 m2"
+    "foundation: 5 independent signals (bright_area, connected_area, persistence, geometry, prior_veg_loss, worked_ground)"
    ],
    "period": "2024-12-H2",
    "aoi_source": "unknown"
@@ -1126,12 +2400,19 @@
    "largest_component_rectangularity": null,
    "dist_to_building_m": null,
    "dist_to_point_m": null,
-   "persistence": null,
+   "persistence": 0.333,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 45,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 0 m2 and vegetation loss 0 m2 are both below the 8,000 m2 minimum"
+    "largest component 0 m2 and vegetation loss 0 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2025-01-H1",
    "aoi_source": "unknown"
@@ -1151,12 +2432,19 @@
    "largest_component_rectangularity": 0.6602,
    "dist_to_building_m": null,
    "dist_to_point_m": 617.5,
-   "persistence": 1.0,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 46,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 6,313 m2 and vegetation loss 5,311 m2 are both below the 8,000 m2 minimum"
+    "largest component 6,313 m2 and vegetation loss 5,311 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2025-01-H2",
    "aoi_source": "unknown"
@@ -1176,12 +2464,19 @@
    "largest_component_rectangularity": 0.6466,
    "dist_to_building_m": null,
    "dist_to_point_m": 591.8,
-   "persistence": 1.0,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 47,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 6,112 m2 and vegetation loss 6,814 m2 are both below the 8,000 m2 minimum"
+    "largest component 6,112 m2 and vegetation loss 6,814 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2025-02-H1",
    "aoi_source": "unknown"
@@ -1202,11 +2497,18 @@
    "dist_to_building_m": null,
    "dist_to_point_m": 600.1,
    "persistence": 1.0,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 48,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.823,
+   "stage_confidence": 0.863,
    "stage_reasons": [
-    "high-albedo 11,523 m2 over soil 47,194 m2"
+    "foundation: 5 independent signals (bright_area, connected_area, persistence, geometry, prior_veg_loss, worked_ground)"
    ],
    "period": "2025-02-H2",
    "aoi_source": "unknown"
@@ -1226,12 +2528,19 @@
    "largest_component_rectangularity": 0.4559,
    "dist_to_building_m": null,
    "dist_to_point_m": 571.3,
-   "persistence": 0.0,
-   "stage_pct": 0,
-   "stage_label": "no construction",
-   "stage_confidence": 0.55,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 49,
+   "stage_pct": 15,
+   "stage_group": null,
+   "stage_label": "foundation work",
+   "stage_confidence": 0.801,
    "stage_reasons": [
-    "change did not persist (persistence 0.00 < 0.50) \u2014 transient, likely agricultural or moisture"
+    "foundation: 4 independent signals (bright_area, connected_area, persistence, prior_veg_loss, worked_ground)"
    ],
    "period": "2025-03-H1",
    "aoi_source": "unknown"
@@ -1251,12 +2560,19 @@
    "largest_component_rectangularity": 0.7171,
    "dist_to_building_m": null,
    "dist_to_point_m": 603.0,
-   "persistence": 0.75,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 50,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.768,
+   "stage_confidence": 0.883,
    "stage_reasons": [
-    "high-albedo 5,010 m2 over soil 46,192 m2"
+    "foundation: 5 independent signals (bright_area, connected_area, persistence, geometry, prior_veg_loss, worked_ground)"
    ],
    "period": "2025-03-H2",
    "aoi_source": "unknown"
@@ -1276,12 +2592,19 @@
    "largest_component_rectangularity": 0.7401,
    "dist_to_building_m": null,
    "dist_to_point_m": 565.1,
-   "persistence": 0.75,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 51,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.773,
+   "stage_confidence": 0.888,
    "stage_reasons": [
-    "high-albedo 2,104 m2 over soil 23,146 m2"
+    "foundation: 5 independent signals (bright_area, connected_area, persistence, geometry, prior_veg_loss, worked_ground)"
    ],
    "period": "2025-04-H1",
    "aoi_source": "unknown"
@@ -1301,12 +2624,19 @@
    "largest_component_rectangularity": 0.7844,
    "dist_to_building_m": null,
    "dist_to_point_m": 596.8,
-   "persistence": 0.75,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 52,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.782,
+   "stage_confidence": 0.897,
    "stage_reasons": [
-    "high-albedo 2,505 m2 over soil 29,359 m2"
+    "foundation: 5 independent signals (bright_area, connected_area, persistence, geometry, prior_veg_loss, worked_ground)"
    ],
    "period": "2025-04-H2",
    "aoi_source": "unknown"
@@ -1326,12 +2656,19 @@
    "largest_component_rectangularity": 0.5349,
    "dist_to_building_m": null,
    "dist_to_point_m": 556.9,
-   "persistence": 0.0,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 53,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 2,305 m2 and vegetation loss 1,703 m2 are both below the 8,000 m2 minimum"
+    "largest component 2,305 m2 and vegetation loss 1,703 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2025-05-H1",
    "aoi_source": "unknown"
@@ -1351,12 +2688,19 @@
    "largest_component_rectangularity": 0.7521,
    "dist_to_building_m": null,
    "dist_to_point_m": 613.9,
-   "persistence": 0.75,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 54,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.775,
+   "stage_confidence": 0.791,
    "stage_reasons": [
-    "high-albedo 3,206 m2 over soil 12,224 m2"
+    "foundation: 5 independent signals (bright_area, connected_area, persistence, geometry, prior_veg_loss, worked_ground)"
    ],
    "period": "2025-05-H2",
    "aoi_source": "unknown"
@@ -1376,12 +2720,19 @@
    "largest_component_rectangularity": 0.8546,
    "dist_to_building_m": null,
    "dist_to_point_m": 610.1,
-   "persistence": 0.5,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 204008.08396874956,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 55,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.721,
+   "stage_confidence": 0.811,
    "stage_reasons": [
-    "high-albedo 4,208 m2 over soil 16,733 m2"
+    "foundation: 5 independent signals (bright_area, connected_area, persistence, geometry, prior_veg_loss, worked_ground)"
    ],
    "period": "2025-06-H1",
    "aoi_source": "unknown"
@@ -1401,10 +2752,17 @@
    "largest_component_rectangularity": 0.7706,
    "dist_to_building_m": null,
    "dist_to_point_m": 612.8,
-   "persistence": 0.75,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 56,
    "stage_pct": 10,
+   "stage_group": null,
    "stage_label": "grading and levelling",
-   "stage_confidence": 0.729,
+   "stage_confidence": 0.864,
    "stage_reasons": [
     "soil 12,024 m2 is 88% of the changed area, rectangularity 0.77"
    ],
@@ -1426,12 +2784,19 @@
    "largest_component_rectangularity": 0.8041,
    "dist_to_building_m": null,
    "dist_to_point_m": 580.0,
-   "persistence": 0.25,
-   "stage_pct": 0,
-   "stage_label": "no construction",
-   "stage_confidence": 0.55,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 57,
+   "stage_pct": 15,
+   "stage_group": null,
+   "stage_label": "foundation work",
+   "stage_confidence": 0.901,
    "stage_reasons": [
-    "change did not persist (persistence 0.25 < 0.50) \u2014 transient, likely agricultural or moisture"
+    "foundation: 5 independent signals (bright_area, connected_area, persistence, geometry, prior_veg_loss, worked_ground)"
    ],
    "period": "2025-07-H1",
    "aoi_source": "unknown"
@@ -1451,12 +2816,19 @@
    "largest_component_rectangularity": 0.888,
    "dist_to_building_m": null,
    "dist_to_point_m": 224.3,
-   "persistence": 0.5,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 58,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 2,305 m2 and vegetation loss 4,709 m2 are both below the 8,000 m2 minimum"
+    "largest component 2,305 m2 and vegetation loss 4,709 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2025-07-H2",
    "aoi_source": "unknown"
@@ -1476,10 +2848,17 @@
    "largest_component_rectangularity": 0.725,
    "dist_to_building_m": null,
    "dist_to_point_m": 668.2,
-   "persistence": 1.0,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 59,
    "stage_pct": 5,
+   "stage_group": null,
    "stage_label": "site clearing",
-   "stage_confidence": 0.695,
+   "stage_confidence": 0.655,
    "stage_reasons": [
     "vegetation loss 8,717 m2, soil 7,515 m2, no dominant graded pad yet"
    ],
@@ -1501,10 +2880,17 @@
    "largest_component_rectangularity": 0.8923,
    "dist_to_building_m": null,
    "dist_to_point_m": 542.8,
-   "persistence": 0.75,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 60,
    "stage_pct": 5,
+   "stage_group": null,
    "stage_label": "site clearing",
-   "stage_confidence": 0.653,
+   "stage_confidence": 0.689,
    "stage_reasons": [
     "vegetation loss 15,331 m2, soil 5,611 m2, no dominant graded pad yet"
    ],
@@ -1526,12 +2912,19 @@
    "largest_component_rectangularity": 0.6483,
    "dist_to_building_m": null,
    "dist_to_point_m": 594.8,
-   "persistence": 0.5,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 61,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.68,
+   "stage_confidence": 0.84,
    "stage_reasons": [
-    "high-albedo 13,828 m2 over soil 19,840 m2"
+    "foundation: 4 independent signals (bright_area, persistence, geometry, prior_veg_loss, worked_ground)"
    ],
    "period": "2025-09-H1",
    "aoi_source": "unknown"
@@ -1551,12 +2944,19 @@
    "largest_component_rectangularity": 0.4794,
    "dist_to_building_m": null,
    "dist_to_point_m": 593.2,
-   "persistence": 0.25,
-   "stage_pct": 0,
-   "stage_label": "no construction",
-   "stage_confidence": 0.55,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 62,
+   "stage_pct": null,
+   "stage_group": "10-15",
+   "stage_label": "grading or foundation (unresolved)",
+   "stage_confidence": 0.626,
    "stage_reasons": [
-    "change did not persist (persistence 0.25 < 0.50) \u2014 transient, likely agricultural or moisture"
+    "bright material over worked ground, but only 3 independent signals (need 4) \u2014 cannot separate a graded pad from poured foundations at 10 m; abstaining"
    ],
    "period": "2025-09-H2",
    "aoi_source": "unknown"
@@ -1576,12 +2976,19 @@
    "largest_component_rectangularity": 0.529,
    "dist_to_building_m": null,
    "dist_to_point_m": 586.7,
-   "persistence": 0.0,
-   "stage_pct": 0,
-   "stage_label": "no construction",
-   "stage_confidence": 0.55,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 63,
+   "stage_pct": null,
+   "stage_group": "10-15",
+   "stage_label": "grading or foundation (unresolved)",
+   "stage_confidence": 0.636,
    "stage_reasons": [
-    "change did not persist (persistence 0.00 < 0.50) \u2014 transient, likely agricultural or moisture"
+    "bright material over worked ground, but only 3 independent signals (need 4) \u2014 cannot separate a graded pad from poured foundations at 10 m; abstaining"
    ],
    "period": "2025-10-H1",
    "aoi_source": "unknown"
@@ -1601,12 +3008,19 @@
    "largest_component_rectangularity": 1.0,
    "dist_to_building_m": null,
    "dist_to_point_m": 736.2,
-   "persistence": 0.0,
-   "stage_pct": 0,
-   "stage_label": "no construction",
-   "stage_confidence": 0.55,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 64,
+   "stage_pct": 5,
+   "stage_group": null,
+   "stage_label": "site clearing",
+   "stage_confidence": 0.81,
    "stage_reasons": [
-    "change did not persist (persistence 0.00 < 0.50) \u2014 transient, likely agricultural or moisture"
+    "vegetation loss 9,419 m2, soil 4,108 m2, no dominant graded pad yet"
    ],
    "period": "2025-10-H2",
    "aoi_source": "unknown"
@@ -1626,12 +3040,19 @@
    "largest_component_rectangularity": 0.5063,
    "dist_to_building_m": null,
    "dist_to_point_m": 485.1,
-   "persistence": 0.0,
-   "stage_pct": 0,
-   "stage_label": "no construction",
-   "stage_confidence": 0.55,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 65,
+   "stage_pct": 15,
+   "stage_group": null,
+   "stage_label": "foundation work",
+   "stage_confidence": 0.811,
    "stage_reasons": [
-    "change did not persist (persistence 0.00 < 0.50) \u2014 transient, likely agricultural or moisture"
+    "foundation: 4 independent signals (bright_area, connected_area, persistence, prior_veg_loss, worked_ground)"
    ],
    "period": "2025-11-H1",
    "aoi_source": "unknown"
@@ -1651,10 +3072,17 @@
    "largest_component_rectangularity": 1.0,
    "dist_to_building_m": null,
    "dist_to_point_m": 594.2,
-   "persistence": 1.0,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 66,
    "stage_pct": 5,
+   "stage_group": null,
    "stage_label": "site clearing",
-   "stage_confidence": 0.75,
+   "stage_confidence": 0.71,
    "stage_reasons": [
     "vegetation loss 13,928 m2, soil 301 m2, no dominant graded pad yet"
    ],
@@ -1676,12 +3104,19 @@
    "largest_component_rectangularity": 0.6104,
    "dist_to_building_m": null,
    "dist_to_point_m": 295.9,
-   "persistence": 0.0,
-   "stage_pct": 0,
-   "stage_label": "no construction",
-   "stage_confidence": 0.55,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 67,
+   "stage_pct": 15,
+   "stage_group": null,
+   "stage_label": "foundation work",
+   "stage_confidence": 0.762,
    "stage_reasons": [
-    "change did not persist (persistence 0.00 < 0.50) \u2014 transient, likely agricultural or moisture"
+    "foundation: 5 independent signals (bright_area, connected_area, persistence, geometry, prior_veg_loss, worked_ground)"
    ],
    "period": "2025-12-H1",
    "aoi_source": "unknown"
@@ -1701,12 +3136,19 @@
    "largest_component_rectangularity": 0.8333,
    "dist_to_building_m": null,
    "dist_to_point_m": 512.9,
-   "persistence": 0.75,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 68,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 3,006 m2 and vegetation loss 3,607 m2 are both below the 8,000 m2 minimum"
+    "largest component 3,006 m2 and vegetation loss 3,607 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2025-12-H2",
    "aoi_source": "unknown"
@@ -1726,12 +3168,19 @@
    "largest_component_rectangularity": 0.723,
    "dist_to_building_m": null,
    "dist_to_point_m": 563.2,
-   "persistence": 0.5,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 69,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 6,313 m2 and vegetation loss 3,808 m2 are both below the 8,000 m2 minimum"
+    "largest component 6,313 m2 and vegetation loss 3,808 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2026-01-H1",
    "aoi_source": "unknown"
@@ -1751,12 +3200,19 @@
    "largest_component_rectangularity": 0.8638,
    "dist_to_building_m": null,
    "dist_to_point_m": 568.0,
-   "persistence": 0.25,
-   "stage_pct": 0,
-   "stage_label": "no construction",
-   "stage_confidence": 0.55,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 70,
+   "stage_pct": 15,
+   "stage_group": null,
+   "stage_label": "foundation work",
+   "stage_confidence": 0.913,
    "stage_reasons": [
-    "change did not persist (persistence 0.25 < 0.50) \u2014 transient, likely agricultural or moisture"
+    "foundation: 5 independent signals (bright_area, connected_area, persistence, geometry, prior_veg_loss, worked_ground)"
    ],
    "period": "2026-01-H2",
    "aoi_source": "unknown"
@@ -1776,12 +3232,19 @@
    "largest_component_rectangularity": 0.7684,
    "dist_to_building_m": null,
    "dist_to_point_m": 538.8,
-   "persistence": 0.0,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 71,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
-   "stage_confidence": 0.55,
+   "stage_confidence": 0.5,
    "stage_reasons": [
-    "change did not persist (persistence 0.00 < 0.50) \u2014 transient, likely agricultural or moisture"
+    "change present but below every stage's evidence bar"
    ],
    "period": "2026-02-H1",
    "aoi_source": "unknown"
@@ -1801,12 +3264,19 @@
    "largest_component_rectangularity": 0.7488,
    "dist_to_building_m": null,
    "dist_to_point_m": 605.1,
-   "persistence": 0.0,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 72,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 3,707 m2 and vegetation loss 5,812 m2 are both below the 8,000 m2 minimum"
+    "largest component 3,707 m2 and vegetation loss 5,812 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2026-02-H2",
    "aoi_source": "unknown"
@@ -1826,12 +3296,19 @@
    "largest_component_rectangularity": 0.6937,
    "dist_to_building_m": null,
    "dist_to_point_m": 544.2,
-   "persistence": 0.0,
-   "stage_pct": 0,
-   "stage_label": "no construction",
-   "stage_confidence": 0.55,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 73,
+   "stage_pct": 5,
+   "stage_group": null,
+   "stage_label": "site clearing",
+   "stage_confidence": 0.649,
    "stage_reasons": [
-    "change did not persist (persistence 0.00 < 0.50) \u2014 transient, likely agricultural or moisture"
+    "vegetation loss 8,116 m2, soil 3,307 m2, no dominant graded pad yet"
    ],
    "period": "2026-03-H1",
    "aoi_source": "unknown"
@@ -1851,12 +3328,19 @@
    "largest_component_rectangularity": 1.0,
    "dist_to_building_m": null,
    "dist_to_point_m": 598.0,
-   "persistence": 1.0,
+   "persistence": 0.333,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "no_change",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 74,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 1,303 m2 and vegetation loss 3,407 m2 are both below the 8,000 m2 minimum"
+    "largest component 1,303 m2 and vegetation loss 3,407 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2026-03-H2",
    "aoi_source": "unknown"
@@ -1876,12 +3360,19 @@
    "largest_component_rectangularity": 0.4571,
    "dist_to_building_m": null,
    "dist_to_point_m": 365.5,
-   "persistence": 0.75,
-   "stage_pct": 15,
-   "stage_label": "foundation work",
-   "stage_confidence": 0.716,
+   "persistence": 0.333,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "provisional_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 75,
+   "stage_pct": 0,
+   "stage_group": null,
+   "stage_label": "no construction",
+   "stage_confidence": 0.55,
    "stage_reasons": [
-    "high-albedo 3,307 m2 over soil 24,750 m2"
+    "change did not persist (0.33 < 0.50) \u2014 transient, likely agricultural or moisture"
    ],
    "period": "2026-04-H1",
    "aoi_source": "unknown"
@@ -1901,12 +3392,19 @@
    "largest_component_rectangularity": 0.9444,
    "dist_to_building_m": null,
    "dist_to_point_m": 486.6,
-   "persistence": 0.25,
+   "persistence": 0.667,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 76,
    "stage_pct": 0,
+   "stage_group": null,
    "stage_label": "no construction",
    "stage_confidence": 0.6,
    "stage_reasons": [
-    "largest component 1,703 m2 and vegetation loss 7,415 m2 are both below the 8,000 m2 minimum"
+    "largest component 1,703 m2 and vegetation loss 7,415 m2 both below the 8,000 m2 minimum"
    ],
    "period": "2026-04-H2",
    "aoi_source": "unknown"
@@ -1927,11 +3425,18 @@
    "dist_to_building_m": null,
    "dist_to_point_m": 326.8,
    "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 77,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.781,
+   "stage_confidence": 0.791,
    "stage_reasons": [
-    "high-albedo 13,828 m2 over soil 22,846 m2"
+    "foundation: 4 independent signals (bright_area, connected_area, persistence, prior_veg_loss, worked_ground)"
    ],
    "period": "2026-05-H1",
    "aoi_source": "unknown"
@@ -1952,11 +3457,18 @@
    "dist_to_building_m": null,
    "dist_to_point_m": 326.4,
    "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 78,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.802,
+   "stage_confidence": 0.812,
    "stage_reasons": [
-    "high-albedo 21,543 m2 over soil 22,044 m2"
+    "foundation: 4 independent signals (bright_area, connected_area, persistence, prior_veg_loss, worked_ground)"
    ],
    "period": "2026-05-H2",
    "aoi_source": "unknown"
@@ -1977,11 +3489,18 @@
    "dist_to_building_m": null,
    "dist_to_point_m": 338.5,
    "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 79,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.819,
+   "stage_confidence": 0.829,
    "stage_reasons": [
-    "high-albedo 12,725 m2 over soil 19,639 m2"
+    "foundation: 4 independent signals (bright_area, connected_area, persistence, prior_veg_loss, worked_ground)"
    ],
    "period": "2026-06-H1",
    "aoi_source": "unknown"
@@ -2001,12 +3520,19 @@
    "largest_component_rectangularity": 0.4354,
    "dist_to_building_m": null,
    "dist_to_point_m": 328.5,
-   "persistence": 0.75,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 80,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.712,
+   "stage_confidence": 0.797,
    "stage_reasons": [
-    "high-albedo 12,024 m2 over soil 22,345 m2"
+    "foundation: 4 independent signals (bright_area, connected_area, persistence, prior_veg_loss, worked_ground)"
    ],
    "period": "2026-06-H2",
    "aoi_source": "unknown"
@@ -2027,11 +3553,18 @@
    "dist_to_building_m": null,
    "dist_to_point_m": 338.6,
    "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 81,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.829,
+   "stage_confidence": 0.869,
    "stage_reasons": [
-    "high-albedo 16,333 m2 over soil 13,627 m2"
+    "foundation: 5 independent signals (bright_area, connected_area, persistence, geometry, prior_veg_loss, worked_ground)"
    ],
    "period": "2026-07-H1",
    "aoi_source": "unknown"
@@ -2052,11 +3585,18 @@
    "dist_to_building_m": null,
    "dist_to_point_m": 342.4,
    "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 82,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.803,
+   "stage_confidence": 0.813,
    "stage_reasons": [
-    "high-albedo 10,822 m2 over soil 11,122 m2"
+    "foundation: 4 independent signals (bright_area, connected_area, persistence, prior_veg_loss, worked_ground)"
    ],
    "period": "2026-07-H2",
    "aoi_source": "unknown"
@@ -2077,9 +3617,16 @@
    "dist_to_building_m": null,
    "dist_to_point_m": 304.8,
    "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 83,
    "stage_pct": 5,
+   "stage_group": null,
    "stage_label": "site clearing",
-   "stage_confidence": 0.747,
+   "stage_confidence": 0.807,
    "stage_reasons": [
     "vegetation loss 18,938 m2, soil 7,816 m2, no dominant graded pad yet"
    ],
@@ -2102,11 +3649,18 @@
    "dist_to_building_m": null,
    "dist_to_point_m": 334.2,
    "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 84,
    "stage_pct": 15,
+   "stage_group": null,
    "stage_label": "foundation work",
-   "stage_confidence": 0.821,
+   "stage_confidence": 0.861,
    "stage_reasons": [
-    "high-albedo 5,511 m2 over soil 13,327 m2"
+    "foundation: 5 independent signals (bright_area, connected_area, persistence, geometry, prior_veg_loss, worked_ground)"
    ],
    "period": "2026-08-H2",
    "aoi_source": "unknown"
@@ -2126,10 +3680,17 @@
    "largest_component_rectangularity": 0.5686,
    "dist_to_building_m": null,
    "dist_to_point_m": 319.4,
-   "persistence": null,
+   "persistence": 1.0,
+   "prior_veg_loss_m2": 249198.479779116,
+   "visual_confirmed": null,
+   "detection_state": "confirmed_start",
+   "provisional_period": "2024-02-H2",
+   "confirmed_period": "2024-02-H2",
+   "n_clear_seen": 85,
    "stage_pct": 5,
+   "stage_group": null,
    "stage_label": "site clearing",
-   "stage_confidence": 0.514,
+   "stage_confidence": 0.694,
    "stage_reasons": [
     "vegetation loss 22,345 m2, soil 5,912 m2, no dominant graded pad yet"
    ],
