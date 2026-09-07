@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LSMA fractions vs spectral indices</title>
+<style>
+:root{
+  color-scheme:light;
+  --surface-0:#f6f5f3; --surface-1:#fcfcfb; --border:#e2e0da;
+  --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#87857e;
+  --grid:#e8e6e0; --rule:#c9c6be;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100;
+  --start:#e34948;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --surface-0:#111110; --surface-1:#1a1a19; --border:#33322f;
+  --text-primary:#fff; --text-secondary:#c3c2b7; --text-muted:#8d8b82;
+  --grid:#2a2a27; --rule:#45443f;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+  --start:#e66767;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --surface-0:#111110; --surface-1:#1a1a19; --border:#33322f;
+  --text-primary:#fff; --text-secondary:#c3c2b7; --text-muted:#8d8b82;
+  --grid:#2a2a27; --rule:#45443f;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+  --start:#e66767;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--surface-0);color:var(--text-primary);
+  font:14px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:32px 20px 64px}
+h1{font-size:22px;font-weight:650;letter-spacing:-.01em;margin:0 0 6px}
+.sub{color:var(--text-secondary);max-width:76ch;margin:0 0 4px}
+.note{color:var(--text-muted);font-size:12.5px;max-width:82ch;margin:10px 0 0}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  margin:22px 0 26px;padding:12px 14px;background:var(--surface-1);
+  border:1px solid var(--border);border-radius:10px}
+.controls .lbl{font-size:12px;color:var(--text-muted);text-transform:uppercase;
+  letter-spacing:.06em;margin-right:4px}
+button{font:inherit;font-size:13px;color:var(--text-primary);background:var(--surface-0);
+  border:1px solid var(--border);border-radius:999px;padding:5px 12px;cursor:pointer}
+button:hover{border-color:var(--rule)}
+button[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);
+  border-color:var(--text-primary)}
+.chip{display:inline-flex;align-items:center;gap:6px}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;
+  padding:18px 18px 10px;margin-bottom:20px}
+.card h2{font-size:15.5px;font-weight:620;margin:0 0 2px}
+.meta{color:var(--text-secondary);font-size:12.5px;margin:0 0 2px}
+.hit{color:var(--text-muted);font-size:12.5px;margin:0 0 12px}
+.panel{margin-top:6px}
+.ptitle{font-size:12px;color:var(--text-muted);text-transform:uppercase;
+  letter-spacing:.06em;margin:12px 0 2px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.gridline{stroke:var(--grid);stroke-width:1}
+.axis{stroke:var(--rule);stroke-width:1}
+.tick{fill:var(--text-muted);font-size:10.5px}
+.serieslabel{font-size:11px;font-weight:600}
+.startline{stroke:var(--start);stroke-width:1.5;stroke-dasharray:none}
+.startlab{fill:var(--start);font-size:10.5px;font-weight:600}
+.tip{position:fixed;pointer-events:none;background:var(--surface-1);
+  border:1px solid var(--rule);border-radius:8px;padding:8px 10px;font-size:12px;
+  box-shadow:0 6px 20px rgba(0,0,0,.16);opacity:0;transition:opacity .08s;z-index:9;
+  min-width:170px}
+.tip b{display:block;margin-bottom:5px;font-size:12px}
+.tr{display:flex;justify-content:space-between;gap:14px;line-height:1.55}
+.tr span:last-child{font-variant-numeric:tabular-nums;color:var(--text-secondary)}
+table{border-collapse:collapse;width:100%;font-size:12px;
+  font-variant-numeric:tabular-nums;margin-top:10px}
+th,td{text-align:right;padding:3px 8px;border-bottom:1px solid var(--border);
+  white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--text-muted);font-weight:600;position:sticky;top:0;
+  background:var(--surface-1)}
+.tablewrap{max-height:340px;overflow:auto;border:1px solid var(--border);
+  border-radius:8px;margin-top:8px}
+.hidden{display:none}
+.imgrow{display:flex;gap:16px;align-items:flex-start;margin-top:14px;
+  padding-top:14px;border-top:1px solid var(--border)}
+.viewer{flex:none;background:#000;border:1px solid var(--border);border-radius:8px;
+  overflow:hidden;display:flex;align-items:center;justify-content:center;
+  height:190px;min-width:120px}
+.viewer img{height:190px;width:auto;display:block;image-rendering:pixelated}
+.viewer.empty{color:var(--text-muted);font-size:12px;background:var(--surface-0);
+  padding:0 22px;text-align:center}
+.vinfo{flex:1;min-width:0}
+.vperiod{font-size:13.5px;font-weight:640;margin:0 0 2px}
+.vhint{color:var(--text-muted);font-size:12px;margin:0 0 8px}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:4px 14px;
+  font-size:12px;font-variant-numeric:tabular-nums}
+.vgrid div{display:flex;justify-content:space-between;gap:8px;
+  border-bottom:1px solid var(--border);padding:2px 0}
+.vgrid span:last-child{color:var(--text-secondary)}
+.strip{display:flex;gap:2px;overflow-x:auto;margin-top:10px;padding-bottom:6px;
+  scrollbar-width:thin}
+.strip figure{margin:0;flex:none;cursor:pointer;opacity:.62;transition:opacity .1s}
+.strip figure:hover,.strip figure.on{opacity:1}
+.strip img{height:38px;width:auto;display:block;border-radius:2px;
+  font-size:0;color:transparent;background:var(--surface-0);
+  image-rendering:pixelated;border:1px solid transparent}
+.strip figure.on img{border-color:var(--text-primary)}
+.strip figure.start img{border-color:var(--start)}
+.strip figcaption{font-size:8.5px;color:var(--text-muted);text-align:center;
+  margin-top:2px;letter-spacing:-.02em}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin:2px 0 0;font-size:12px;
+  color:var(--text-secondary)}
+</style></head><body>
+<div class="wrap">
+<h1>LSMA fractions vs spectral indices</h1>
+<p class="sub">Five data-centre campuses, fortnightly Sentinel-2 L2A, Jan 2023 - Sep 2026.
+Endmember fractions (fully constrained LSMA, endmembers extracted from these scenes)
+above; the NDVI / NDBI / SWIR means the current detector uses below. Both are computed
+from the <em>same</em> rasters and the same cloud mask, so the two feature spaces are
+directly comparable. The red rule marks the verified construction start.</p>
+
+<div class="controls">
+  <span class="lbl">Series</span>
+  <button data-k="veg" aria-pressed="true" class="chip"><i class="dot" style="background:var(--s1)"></i>Vegetation</button>
+  <button data-k="soil" aria-pressed="true" class="chip"><i class="dot" style="background:var(--s2)"></i>Soil</button>
+  <button data-k="high" aria-pressed="true" class="chip"><i class="dot" style="background:var(--s3)"></i>High albedo</button>
+  <button data-k="low" aria-pressed="true" class="chip"><i class="dot" style="background:var(--s4)"></i>Low albedo</button>
+  <span style="width:14px"></span>
+  <span class="lbl">AOI</span>
+  <span id="varbtns"></span>
+  <span style="width:14px"></span>
+  <span class="lbl">View</span>
+  <button id="cloudBtn" aria-pressed="false">Hide cloudy periods</button>
+  <button id="tableBtn" aria-pressed="false">Show table</button>
+</div>
+<p class="note" id="aoinote" style="margin:-14px 0 20px"></p>
+<div id="app"></div>
+<p class="note">Gaps are real: a break in a line means no scene that fortnight passed the
+40&#37; cloud filter, not a value of zero - nothing is interpolated across them. Periods
+with under 45&#37; valid pixels are drawn at reduced opacity because thin cloud unmixes as
+high albedo (that fraction anti-correlates with valid pixel count at -0.37 to -0.42),
+so spikes there are suspect. The paper's own noise filter for this is not yet
+implemented.</p>
+</div>
+<div class="tip" id="tip"></div>
+<script>
+const ALL = __DATA__;
+let VAR = "aoi400";
+let DATA = {sites: ALL.variants[VAR].sites};
+function chipdir(){ return ALL.variants[VAR].chipdir; }
+const SER = [
+  {k:"veg", n:"Vegetation", c:"var(--s1)"},
+  {k:"soil", n:"Soil", c:"var(--s2)"},
+  {k:"high", n:"High albedo", c:"var(--s3)"},
+  {k:"low", n:"Low albedo", c:"var(--s4)"}
+];
+const IDX = [
+  {k:"ndvi", n:"NDVI", c:"var(--s1)"},
+  {k:"ndbi", n:"NDBI", c:"var(--s2)"},
+  {k:"swir", n:"SWIR (B11)", c:"var(--s3)"}
+];
+const on = {veg:1, soil:1, high:1, low:1};
+let hideCloud = false, showTable = false;
+const MINV = 0.45;
+const W = 1080, H = 190, ML = 46, MR = 96, MT = 12, MB = 22;
+
+function xs(i, n){ return ML + i * (W - ML - MR) / (n - 1); }
+function ysc(v, lo, hi){ return MT + (hi - v) * (H - MT - MB) / (hi - lo); }
+
+function paths(rows, key, n, lo, hi){
+  const segs = []; let cur = [];
+  rows.forEach((r, i) => {
+    const ok = r[key] !== undefined && r[key] !== null &&
+               (!hideCloud || (r.v || 0) >= MINV);
+    if (ok) cur.push([xs(r.x, n), ysc(r[key], lo, hi)]);
+    else { if (cur.length > 1) segs.push(cur); cur = []; }
+  });
+  if (cur.length > 1) segs.push(cur);
+  return segs.map(s => "M" + s.map(p => p[0].toFixed(1) + "," + p[1].toFixed(1)).join("L")).join(" ");
+}
+
+function yearTicks(periods){
+  const out = [];
+  periods.forEach((p, i) => { if (p.endsWith("-01-H1")) out.push([i, p.slice(0,4)]); });
+  return out;
+}
+
+function panel(site, series, lo, hi, fmt){
+  const n = site.periods.length;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img">`;
+  const steps = 5;
+  for (let i = 0; i <= steps; i++){
+    const v = lo + (hi - lo) * i / steps, y = ysc(v, lo, hi);
+    s += `<line class="gridline" x1="${ML}" y1="${y.toFixed(1)}" x2="${W-MR}" y2="${y.toFixed(1)}"/>`;
+    s += `<text class="tick" x="${ML-8}" y="${(y+3.5).toFixed(1)}" text-anchor="end">${fmt(v)}</text>`;
+  }
+  yearTicks(site.periods).forEach(([i, lab]) => {
+    const x = xs(i, n);
+    s += `<line class="axis" x1="${x.toFixed(1)}" y1="${MT}" x2="${x.toFixed(1)}" y2="${H-MB}" opacity=".45"/>`;
+    s += `<text class="tick" x="${x.toFixed(1)}" y="${H-MB+14}" text-anchor="middle">${lab}</text>`;
+  });
+  const sx = xs(site.startx, n);
+  s += `<line class="startline" x1="${sx.toFixed(1)}" y1="${MT-4}" x2="${sx.toFixed(1)}" y2="${H-MB}"/>`;
+  s += `<text class="startlab" x="${(sx+4).toFixed(1)}" y="${MT+5}">start ${site.start}</text>`;
+  const ends = [];
+  series.forEach(se => {
+    if (se.k in on && !on[se.k]) return;
+    const d = paths(site.rows, se.k, n, lo, hi);
+    if (!d) return;
+    s += `<path d="${d}" fill="none" stroke="${se.c}" stroke-width="2"
+           stroke-linejoin="round" stroke-linecap="round"/>`;
+    let last = null;
+    for (let i = site.rows.length - 1; i >= 0; i--){
+      const r = site.rows[i];
+      if (r[se.k] !== undefined && r[se.k] !== null && (!hideCloud || (r.v||0) >= MINV)){ last = r; break; }
+    }
+    if (last) ends.push({y: ysc(last[se.k], lo, hi), x: xs(last.x, n), c: se.c, n: se.n});
+  });
+  // de-collide the direct labels: series ending at similar values would print on
+  // top of each other (Soil under High albedo). Push apart, keep the dot anchored
+  // to the true value and elbow a leader line across to the moved label.
+  const GAP = 13;
+  ends.sort((a, b) => a.y - b.y);
+  ends.forEach(e => { e.ly = e.y; });
+  for (let pass = 0; pass < 24; pass++){
+    let moved = false;
+    for (let i = 1; i < ends.length; i++){
+      const d = ends[i].ly - ends[i-1].ly;
+      if (d < GAP){ const sh = (GAP - d) / 2; ends[i-1].ly -= sh; ends[i].ly += sh; moved = true; }
+    }
+    if (!moved) break;
+  }
+  const top = MT + 4, bot = H - MB - 2;
+  ends.forEach(e => { e.ly = Math.max(top, Math.min(bot, e.ly)); });
+  ends.forEach(e => {
+    const lx = W - MR + 10;
+    if (Math.abs(e.ly - e.y) > 1.5)
+      s += `<path d="M${e.x.toFixed(1)},${e.y.toFixed(1)}L${(lx-6).toFixed(1)},${e.ly.toFixed(1)}"
+             fill="none" stroke="${e.c}" stroke-width="1" opacity=".45"/>`;
+    s += `<circle cx="${e.x.toFixed(1)}" cy="${e.y.toFixed(1)}" r="4" fill="${e.c}"
+           stroke="var(--surface-1)" stroke-width="2"/>`;
+    s += `<text class="serieslabel" x="${lx}" y="${(e.ly+3.5).toFixed(1)}"
+           fill="${e.c}">${e.n}</text>`;
+  });
+  s += `<rect x="${ML}" y="${MT}" width="${W-ML-MR}" height="${H-MT-MB}" fill="transparent" class="hitzone"/>`;
+  s += `</svg>`;
+  return s;
+}
+
+function table(site){
+  const cols = [["p","period"],["veg","veg"],["soil","soil"],["high","high alb"],
+    ["low","low alb"],["ndvi","NDVI"],["ndbi","NDBI"],["swir","SWIR"],
+    ["sha","soil ha"],["hha","high ha"],["v","valid"]];
+  let h = "<div class='tablewrap'><table><thead><tr>" +
+    cols.map(c => `<th>${c[1]}</th>`).join("") + "</tr></thead><tbody>";
+  site.rows.forEach(r => {
+    h += "<tr>" + cols.map(c => {
+      const v = r[c[0]];
+      return `<td>${v === undefined || v === null ? "&mdash;" : v}</td>`;
+    }).join("") + "</tr>";
+  });
+  return h + "</tbody></table></div>";
+}
+
+function strip(site, si){
+  return site.chips.map(p => {
+    const r = site.rows.find(q => q.p === p) || {};
+    return `<figure data-p="${p}" data-si="${si}"
+      class="${p === site.start ? "start" : ""}">
+      <img src="chips/${site.slug}/${p}.png" alt="${p}" loading="lazy">
+      <figcaption>${p.slice(2).replace("-", "")}</figcaption></figure>`;
+  }).join("");
+}
+
+function showFrame(si, period){
+  const site = DATA.sites[si];
+  const v = document.querySelector(`[data-v="${si}"]`);
+  const vp = document.querySelector(`[data-vp="${si}"]`);
+  const vg = document.querySelector(`[data-vg="${si}"]`);
+  const r = site.rows.find(q => q.p === period);
+  const has = site.chips.includes(period);
+  if (has){
+    v.className = "viewer";
+    v.innerHTML = `<img src="${chipdir()}/${site.slug}/${period}.png" alt="${period}">`;
+  } else {
+    v.className = "viewer empty";
+    v.textContent = "no scene passed the cloud filter";
+  }
+  vp.innerHTML = period + (period === site.start
+    ? ' <span style="color:var(--start);font-weight:600">&middot; verified start</span>' : "");
+  if (!r || r.veg === undefined){ vg.innerHTML = ""; return; }
+  const F = [["Vegetation","veg"],["Soil","soil"],["High albedo","high"],["Low albedo","low"],
+             ["NDVI","ndvi"],["NDBI","ndbi"],["SWIR","swir"]];
+  vg.innerHTML = F.map(([n,k]) => `<div><span>${n}</span><span>${
+    r[k] === undefined || r[k] === null ? "&mdash;" : r[k].toFixed(3)}</span></div>`).join("")
+    + `<div><span>Soil area</span><span>${r.sha} ha</span></div>`
+    + `<div><span>High-alb area</span><span>${r.hha} ha</span></div>`
+    + `<div><span>Valid px</span><span>${(r.v*100).toFixed(0)}%</span></div>`
+    + `<div><span>Unmix RMSE</span><span>${r.rmse}</span></div>`;
+  document.querySelectorAll(`[data-strip="${si}"] figure`).forEach(f =>
+    f.classList.toggle("on", f.dataset.p === period));
+}
+
+function render(){
+  document.getElementById("app").innerHTML = DATA.sites.map((s, i) => `
+    <div class="card" data-i="${i}">
+      <h2>${s.name}</h2>
+      <p class="meta">${s.state} &middot; ${s.ha} ha &middot; ${s.bld} building${s.bld>1?"s":""}
+        &middot; verified start ${s.start}</p>
+      <div class="ptitle">Endmember fractions</div>
+      <div class="panel" data-kind="frac">${panel(s, SER, 0, 1, v => v.toFixed(1))}</div>
+      <div class="ptitle">Spectral indices (current detector inputs)</div>
+      <div class="panel" data-kind="idx">${panel(s, IDX, -0.6, 1, v => v.toFixed(1))}</div>
+      <div class="imgrow">
+        <div class="viewer empty" data-v="${i}">hover a chart</div>
+        <div class="vinfo">
+          <p class="vperiod" data-vp="${i}">&mdash;</p>
+          <p class="vhint">Truecolor rendered from the same raster the numbers below come from,
+             with one fixed stretch per site &mdash; brightness changes are real, not autoscaled.
+             Hover either chart, or a frame in the strip.</p>
+          <div class="vgrid" data-vg="${i}"></div>
+        </div>
+      </div>
+      <div class="strip" data-strip="${i}">${strip(s, i)}</div>
+      <div class="${showTable ? "" : "hidden"}">${table(s)}</div>
+    </div>`).join("");
+  wire();
+}
+
+const tip = document.getElementById("tip");
+function wire(){
+  document.querySelectorAll(".card").forEach(card => {
+    const si = +card.dataset.i, site = DATA.sites[si], n = site.periods.length;
+    card.querySelectorAll(".panel").forEach(pan => {
+      const kind = pan.dataset.kind, svg = pan.querySelector("svg");
+      svg.addEventListener("pointermove", ev => {
+        const b = svg.getBoundingClientRect();
+        const px = (ev.clientX - b.left) / b.width * W;
+        let i = Math.round((px - ML) / ((W - ML - MR) / (n - 1)));
+        i = Math.max(0, Math.min(n - 1, i));
+        const r = site.rows.find(q => q.x === i);
+        if (!r){ tip.style.opacity = 0; return; }
+        const list = kind === "frac" ? SER : IDX;
+        let h = `<b>${r.p}</b>`;
+        list.forEach(se => {
+          if (se.k in on && !on[se.k]) return;
+          const v = r[se.k];
+          h += `<div class="tr"><span><i class="dot" style="background:${se.c};
+                display:inline-block;margin-right:6px"></i>${se.n}</span>
+                <span>${v === undefined || v === null ? "no scene" : v.toFixed(3)}</span></div>`;
+        });
+        if (r.v !== undefined)
+          h += `<div class="tr" style="margin-top:5px;border-top:1px solid var(--border);
+                padding-top:4px"><span>valid px</span><span>${(r.v*100).toFixed(0)}%</span></div>`;
+        showFrame(si, r.p);
+        tip.innerHTML = h;
+        tip.style.opacity = 1;
+        tip.style.left = Math.min(ev.clientX + 14, innerWidth - 200) + "px";
+        tip.style.top = Math.min(ev.clientY + 14, innerHeight - 170) + "px";
+      });
+      svg.addEventListener("pointerleave", () => tip.style.opacity = 0);
+    });
+    card.querySelectorAll(`[data-strip] figure`).forEach(f => {
+      f.addEventListener("pointerenter", () => showFrame(+f.dataset.si, f.dataset.p));
+    });
+    showFrame(si, site.start);
+  });
+}
+
+document.querySelectorAll("[data-k]").forEach(b => {
+  b.addEventListener("click", () => {
+    on[b.dataset.k] = !on[b.dataset.k];
+    b.setAttribute("aria-pressed", on[b.dataset.k] ? "true" : "false");
+    render();
+  });
+});
+document.getElementById("varbtns").innerHTML = Object.entries(ALL.variants)
+  .map(([k, v]) => `<button data-var="${k}" aria-pressed="${k === VAR}">${v.label}</button>`)
+  .join(" ");
+document.querySelectorAll("[data-var]").forEach(b => {
+  b.addEventListener("click", () => {
+    VAR = b.dataset.var;
+    DATA = {sites: ALL.variants[VAR].sites};
+    document.querySelectorAll("[data-var]").forEach(o =>
+      o.setAttribute("aria-pressed", o.dataset.var === VAR ? "true" : "false"));
+    document.getElementById("aoinote").textContent = ALL.variants[VAR].note;
+    render();
+  });
+});
+document.getElementById("cloudBtn").addEventListener("click", e => {
+  hideCloud = !hideCloud;
+  e.target.setAttribute("aria-pressed", hideCloud ? "true" : "false");
+  render();
+});
+document.getElementById("tableBtn").addEventListener("click", e => {
+  showTable = !showTable;
+  e.target.setAttribute("aria-pressed", showTable ? "true" : "false");
+  render();
+});
+document.getElementById("aoinote").textContent = ALL.variants[VAR].note;
+render();
+</script></body></html>

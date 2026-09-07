@@ -10,12 +10,60 @@ Output per site: results/basc/<slug>/<period>.tif  float32, 7 bands
 plus grid.json with bbox / shape / period list.
 """
 from __future__ import annotations
-import argparse, concurrent.futures as cf, json, os, re, threading, time
+import argparse, concurrent.futures as cf, json, math, os, re, threading, time
 from acd_core import Cdse, CDSE_PROCESS_URL, MAX_CLOUD_COVERAGE, period_bounds
 from replay import load_truth, unordn, ordn, period_of
 from sites import load_sites, ground_square
 
 MAXCC = [100]
+
+
+def siteplan_geom(meta_path, uid, start_ord, buffer_m, site):
+    """Union of a campus's planned building footprints, buffered.
+
+    The sheet must predate the verified start. A footprint traced from imagery
+    taken after construction would encode the answer, and an AOI drawn around
+    where the buildings ended up is not information a detector could have had
+    before they were built.
+    """
+    import datetime as dt
+    from shapely.geometry import Polygon
+    from shapely.ops import unary_union
+    from replay import ordn, period_of
+    layers = json.load(open(meta_path))["layers"]
+    mine = [l for l in layers if l.get("campus_uid") == uid]
+    if not mine:
+        return None
+    polys, used = [], []
+    for l in mine:
+        d = l.get("sheet_date")
+        if d:
+            try:
+                if ordn(period_of(d)) > start_ord:
+                    print(f"    skip sheet {l['key']} dated {d}: after the start")
+                    continue
+            except Exception:
+                pass
+        for f in l.get("features") or []:
+            r = f.get("ring")
+            if r and len(r) >= 4:
+                polys.append(Polygon(r))
+        used.append(l["key"])
+    if not polys:
+        return None
+    # Buffer isotropically in METRES, not degrees. A degree of longitude is
+    # 111.3*cos(lat) km against 110.5 km for latitude, so buffering raw degrees
+    # would stretch the AOI north-south -- at lat 39 by about 28%.
+    from shapely.affinity import scale
+    lat = site.lat
+    k = max(math.cos(math.radians(lat)), 0.01)
+    g = unary_union(polys)
+    g = scale(g, xfact=k, yfact=1.0, origin=(0, 0))      # -> ~equal metres/deg
+    g = g.buffer(buffer_m / 110_540.0)
+    g = scale(g, xfact=1.0 / k, yfact=1.0, origin=(0, 0))
+    print(f"    site plan {'+'.join(used)}: {len(polys)} footprints -> "
+          f"{g.bounds[2]-g.bounds[0]:.5f}x{g.bounds[3]-g.bounds[1]:.5f} deg")
+    return g
 from shapely.geometry import mapping
 
 # CLP is s2cloudless cloud probability (0-255). SCL alone misses thin cirrus --
@@ -34,7 +82,7 @@ function evaluatePixel(s) {
   return [s.B02, s.B03, s.B04, s.B08, s.B11, s.B12, s.CLP, s.dataMask * valid];
 }"""
 
-OUT = "results/basc"
+OUT = "results"
 def slug(s): return re.sub(r"[^a-z0-9]+","-",s.lower()).strip("-")[:60]
 
 def fetch(cdse, bbox, geom, start, end, w, h, collection):
@@ -61,6 +109,13 @@ def main():
     ap.add_argument("--tag",         default="l2a")
     ap.add_argument("--res-m", type=float, default=10.0)
     ap.add_argument("--max-px", type=int, default=1000)
+    ap.add_argument("--siteplan", default="",
+                    help="path to plan-meta.json; use the union of that campus's "
+                         "planned building footprints (buffered by --siteplan-buffer) "
+                         "as the AOI. Sheets dated after the verified start are refused: "
+                         "a footprint drawn from post-construction imagery would leak "
+                         "the answer into a pre-start detector.")
+    ap.add_argument("--siteplan-buffer", type=float, default=100.0)
     ap.add_argument("--aoi-m", type=float, default=0.0,
                     help="if >0, use a ground square of this side on the site point "
                          "instead of the Regrid parcel")
@@ -83,7 +138,14 @@ def main():
     for uid in picks:
         s = sites[uid]
         d = os.path.join(OUT, a.tag, slug(s.unit_name)); os.makedirs(d, exist_ok=True)
-        geom = ground_square(s.lat, s.lon, a.aoi_m) if a.aoi_m > 0 else s.geometry
+        if a.siteplan:
+            geom = siteplan_geom(a.siteplan, uid, truth[uid], a.siteplan_buffer, s)
+            if geom is None:
+                print(f"  {s.unit_name[:44]:<44} no usable site plan, skipped"); continue
+        elif a.aoi_m > 0:
+            geom = ground_square(s.lat, s.lon, a.aoi_m)
+        else:
+            geom = s.geometry
         x0,y0,x1,y1 = geom.bounds
         import math
         lat = (y0+y1)/2

@@ -10,3 +10,9 @@ __pycache__/
 # Originals: ~/Aterio/aterio-gcp-data-operations/gcp-cloud-run/services/
 #   data-centers/data-process-data-centers-api/app/models/
 *.pkl
+
+# Symlinks to Aterio label/cache data in acd-polygon-lab. Deliberately not
+# committed: the verified start dates and the CDSE stats cache are proprietary
+# and belong to the lab, not to this replication repo.
+basc/results/acd_ui_corrections.json
+basc/stats_cache.json
