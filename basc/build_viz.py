@@ -21,6 +21,19 @@ from PIL import Image
 from replay import ordn
 
 NOTES = {
+    "pos16par": "The 16 site-plan campuses re-run on their REGRID PARCEL, so they sit on "
+                "the same AOI kind as the negatives. Verified starts. Compare against "
+                "siteplan16 below: the two AOIs give the same onset delta on every metric, "
+                "which is why site plans are not on the critical path.",
+    "neg20":    "20 NON-STARTING campuses — recorded stage Announcement / Land Bank / "
+                "Delayed, no verified start. 16 are matched 1:1 to a positive on log "
+                "parcel area and carry that positive's start period as a PSEUDO-start: an "
+                "anchor for the season-matched window, not a label. Nothing was built here; "
+                "the grey dashed rule is where the window was centred, not an event.",
+    "sp16canon":"The 16 site-plan campuses on the union of their PLANNED footprints "
+                "buffered 100 m, recomputed on the canonical endmember basis so they are "
+                "comparable with the parcel runs. Effective median 54 ha against the "
+                "parcel's 68.7 — only 1.3x tighter, which is why the two agree.",
     "siteplan": "Union of the campus's PLANNED building footprints from the "
                 "georeferenced site plan, buffered 100 m. The sheet predates the "
                 "verified start, so this is information a detector could have had "
@@ -67,6 +80,10 @@ def build(serdir: str, chipdir: str) -> list[dict]:
                        for p in glob.glob(f"{chipdir}/{slug}/*.png"))
         site = {"name": s["name"], "state": s["state"], "ha": round(s["area_ha"], 1),
                 "bld": s["n_buildings"], "start": s["start_period"],
+                # A negative's start is an ANCHOR drawn from the positives, not an
+                # observation. The page must never render it as a verified start.
+                "pseudo": bool(s.get("start_is_pseudo")),
+                "cls": s.get("class_label", "positive"),
                 "startx": ordn(s["start_period"]) - o0, "periods": per,
                 "rows": rows, "slug": slug, "chips": chips}
         if chips:

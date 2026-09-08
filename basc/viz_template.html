@@ -62,6 +62,15 @@ svg{display:block;width:100%;height:auto;overflow:visible}
 .serieslabel{font-size:11px;font-weight:600}
 .startline{stroke:var(--start);stroke-width:1.5;stroke-dasharray:none}
 .startlab{fill:var(--start);font-size:10.5px;font-weight:600}
+/* A pseudo-start is a drawn anchor on a campus where nothing was built. It is
+   deliberately grey and dashed so it cannot be misread as a verified event. */
+.startline.pseudo{stroke:var(--text-muted);stroke-width:1.2;stroke-dasharray:4 3}
+.startlab.pseudo{fill:var(--text-muted);font-weight:500}
+.strip figure.start.pseudo img{border-color:var(--text-muted)}
+.tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;
+     font-weight:600;letter-spacing:.02em;vertical-align:1px}
+.tag.neg{background:var(--text-muted);color:var(--surface-1)}
+.tag.pos{background:var(--start);color:#fff}
 .tip{position:fixed;pointer-events:none;background:var(--surface-1);
   border:1px solid var(--rule);border-radius:8px;padding:8px 10px;font-size:12px;
   box-shadow:0 6px 20px rgba(0,0,0,.16);opacity:0;transition:opacity .08s;z-index:9;
@@ -111,11 +120,11 @@ th{color:var(--text-muted);font-weight:600;position:sticky;top:0;
 </style></head><body>
 <div class="wrap">
 <h1>LSMA fractions vs spectral indices</h1>
-<p class="sub">Five data-centre campuses, fortnightly Sentinel-2 L2A, Jan 2023 - Sep 2026.
+<p class="sub"><span id="ncamp"></span>fortnightly Sentinel-2 L2A, Jan 2023 - Sep 2026.
 Endmember fractions (fully constrained LSMA, endmembers extracted from these scenes)
 above; the NDVI / NDBI / SWIR means the current detector uses below. Both are computed
 from the <em>same</em> rasters and the same cloud mask, so the two feature spaces are
-directly comparable. The red rule marks the verified construction start.</p>
+directly comparable. A solid red rule marks a <strong>verified</strong> construction start; a grey dashed rule marks a <strong>pseudo-start</strong> — an anchor drawn on a campus that never started, used only to centre the same season-matched window.</p>
 
 <div class="controls">
   <span class="lbl">Series</span>
@@ -146,6 +155,14 @@ const ALL = __DATA__;
 let VAR = "aoi400";
 let DATA = {sites: ALL.variants[VAR].sites};
 function chipdir(){ return ALL.variants[VAR].chipdir; }
+function setCount(){
+  const n = ALL.variants[VAR].sites.length;
+  const k = ALL.variants[VAR].sites.filter(s => s.pseudo).length;
+  const el = document.getElementById("ncamp");
+  if (el) el.textContent = k
+    ? `${n} campuses (${k} with no construction), `
+    : `${n} data-centre campuses, `;
+}
 const SER = [
   {k:"veg", n:"Vegetation", c:"var(--s1)"},
   {k:"soil", n:"Soil", c:"var(--s2)"},
@@ -198,8 +215,10 @@ function panel(site, series, lo, hi, fmt){
     s += `<text class="tick" x="${x.toFixed(1)}" y="${H-MB+14}" text-anchor="middle">${lab}</text>`;
   });
   const sx = xs(site.startx, n);
-  s += `<line class="startline" x1="${sx.toFixed(1)}" y1="${MT-4}" x2="${sx.toFixed(1)}" y2="${H-MB}"/>`;
-  s += `<text class="startlab" x="${(sx+4).toFixed(1)}" y="${MT+5}">start ${site.start}</text>`;
+  const pc = site.pseudo ? " pseudo" : "";
+  s += `<line class="startline${pc}" x1="${sx.toFixed(1)}" y1="${MT-4}" x2="${sx.toFixed(1)}" y2="${H-MB}"/>`;
+  s += `<text class="startlab${pc}" x="${(sx+4).toFixed(1)}" y="${MT+5}">${
+        site.pseudo ? "pseudo-start" : "start"} ${site.start}</text>`;
   const ends = [];
   series.forEach(se => {
     if (se.k in on && !on[se.k]) return;
@@ -264,8 +283,8 @@ function strip(site, si){
   return site.chips.map(p => {
     const r = site.rows.find(q => q.p === p) || {};
     return `<figure data-p="${p}" data-si="${si}"
-      class="${p === site.start ? "start" : ""}">
-      <img src="chips/${site.slug}/${p}.png" alt="${p}" loading="lazy">
+      class="${p === site.start ? (site.pseudo ? "start pseudo" : "start") : ""}">
+      <img src="${chipdir()}/${site.slug}/${p}.png" alt="${p}" loading="lazy">
       <figcaption>${p.slice(2).replace("-", "")}</figcaption></figure>`;
   }).join("");
 }
@@ -285,7 +304,10 @@ function showFrame(si, period){
     v.textContent = "no scene passed the cloud filter";
   }
   vp.innerHTML = period + (period === site.start
-    ? ' <span style="color:var(--start);font-weight:600">&middot; verified start</span>' : "");
+    ? (site.pseudo
+        ? ' <span style="color:var(--text-muted);font-weight:600">&middot; pseudo-start (anchor, nothing built)</span>'
+        : ' <span style="color:var(--start);font-weight:600">&middot; verified start</span>')
+    : "");
   if (!r || r.veg === undefined){ vg.innerHTML = ""; return; }
   const F = [["Vegetation","veg"],["Soil","soil"],["High albedo","high"],["Low albedo","low"],
              ["NDVI","ndvi"],["NDBI","ndbi"],["SWIR","swir"]];
@@ -300,11 +322,13 @@ function showFrame(si, period){
 }
 
 function render(){
+  setCount();
   document.getElementById("app").innerHTML = DATA.sites.map((s, i) => `
     <div class="card" data-i="${i}">
-      <h2>${s.name}</h2>
+      <h2>${s.name} <span class="tag ${s.pseudo?"neg":"pos"}">${
+        s.pseudo?"NO START":"START"}</span></h2>
       <p class="meta">${s.state} &middot; ${s.ha} ha &middot; ${s.bld} building${s.bld>1?"s":""}
-        &middot; verified start ${s.start}</p>
+        &middot; ${s.pseudo ? `pseudo-start ${s.start} (anchor)` : `verified start ${s.start}`}</p>
       <div class="ptitle">Endmember fractions</div>
       <div class="panel" data-kind="frac">${panel(s, SER, 0, 1, v => v.toFixed(1))}</div>
       <div class="ptitle">Spectral indices (current detector inputs)</div>
