@@ -113,6 +113,25 @@ def fetch(cdse, bbox, geom, start, end, w, h, collection):
       "evalscript": EVAL}
     return cdse.post(CDSE_PROCESS_URL, payload, expect_json=False)
 
+def merge_starts(truth, starts_map):
+    """Combine verified starts with pseudo-starts. Returns (start_of, pseudo).
+
+    A verified start is NEVER replaced by a drawn one. The pseudo-start exists
+    only so a campus that never started can anchor the same season-matched
+    window; if it could overwrite a real start, the positives would quietly be
+    re-dated to the negatives' draw and every onset measurement would shift.
+    """
+    pseudo = {}
+    for uid, per in starts_map.items():
+        if uid in truth:
+            print(f"  refusing pseudo-start for {uid[:8]}: it has a verified start")
+            continue
+        pseudo[uid] = ordn(per)
+    start_of = dict(truth)
+    start_of.update(pseudo)
+    return start_of, pseudo
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--picks", default="/tmp/claude-1000/-home-azul/9d997b7f-bc55-4b65-af21-7ff969074d59/scratchpad/pick5.json")
@@ -143,6 +162,17 @@ def main():
     ap.add_argument("--max-cloud", type=int, default=100,
                     help="tile-level metadata filter; loose by default because it is "
                          "measured over the whole ~110km granule, not the AOI")
+    ap.add_argument("--starts", default="",
+                    help="JSON {uid: period} supplying a start for campuses that "
+                         "have none in the truth set. A non-starting campus has no "
+                         "verified start, so the season-matched statistic has no "
+                         "anchor; this supplies a PSEUDO-start drawn from the "
+                         "positives' own start distribution. Never overrides a real "
+                         "verified start -- truth always wins.")
+    ap.add_argument("--label", default="",
+                    help="written into grid.json as class_label (positive/negative) "
+                         "so downstream code cannot confuse an anchored pseudo-start "
+                         "with a verified one")
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
@@ -154,16 +184,27 @@ def main():
     print("loading sites (~2 min) ...", flush=True)
     sites = {s.unit_uid: s for s in load_sites()}
     truth = load_truth()
+    # A pseudo-start is an ANCHOR, not a label. It marks where to centre the
+    # season-matched window on a campus that never started, so the identical
+    # statistic can be computed on both classes. truth wins on any collision:
+    # a verified start is never silently replaced by a drawn one.
+    pseudo_src = json.load(open(a.starts)) if a.starts else {}
+    start_of, pseudo = merge_starts(truth, pseudo_src)
     periods = [unordn(o) for o in range(ordn(a.from_period), ordn(a.to_period)+1)]
     print(f"{len(periods)} periods {periods[0]}..{periods[-1]} | collection {a.collection}")
 
     jobs = []
+    unanchored = [u for u in picks if u not in start_of]
+    if unanchored:
+        raise SystemExit(
+            f"{len(unanchored)} picked campuses have neither a verified start nor a "
+            f"pseudo-start: {[u[:8] for u in unanchored[:5]]}. Pass --starts.")
     for uid in picks:
         s = sites[uid]
         d = os.path.join(OUT, a.tag, slug(s.unit_name, uid)); os.makedirs(d, exist_ok=True)
         aoi_rec = None
         if a.resolve:
-            obs = a.observation_date or period_bounds(unordn(truth[uid]))[0]
+            obs = a.observation_date or period_bounds(unordn(start_of[uid]))[0]
             aoi_rec = resolve_aoi(s, observation_date=obs,
                                   plan_layers=PLAN_LAYERS,
                                   config={"siteplan_buffer_m": a.siteplan_buffer})
@@ -174,7 +215,7 @@ def main():
             for w in aoi_rec["warnings"][:2]:
                 print(f"      warn: {w[:96]}")
         elif a.siteplan:
-            geom = siteplan_geom(a.siteplan, uid, truth[uid], a.siteplan_buffer, s)
+            geom = siteplan_geom(a.siteplan, uid, start_of[uid], a.siteplan_buffer, s)
             if geom is None:
                 print(f"  {s.unit_name[:44]:<44} no usable site plan, skipped"); continue
         elif a.aoi_m > 0:
@@ -188,7 +229,10 @@ def main():
         w = min(a.max_px, max(16, round(wm/a.res_m))); h = min(a.max_px, max(16, round(hm/a.res_m)))
         json.dump({"uid":uid,"name":s.unit_name,"state":s.state_code,
                    "area_ha":s.area_m2/1e4,"n_buildings":s.n_buildings,
-                   "start_period":unordn(truth[uid]),"bbox":[x0,y0,x1,y1],
+                   "start_period":unordn(start_of[uid]),
+                   "start_is_pseudo": uid in pseudo,
+                   "class_label": a.label or ("negative" if uid in pseudo else "positive"),
+                   "bbox":[x0,y0,x1,y1],
                    "width":w,"height":h,"res_m_x":wm/w,"res_m_y":hm/h,
                    "periods":periods,"collection":a.collection,
                    "bands":["B02","B03","B04","B08","B11","B12","CLP","valid"],

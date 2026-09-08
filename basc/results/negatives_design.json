@@ -1,0 +1,31 @@
+{
+ "seed": 20260908,
+ "n_negatives": 20,
+ "n_pairs": 16,
+ "ks_log_area": 0.1,
+ "pos_parcel_ha_median": 68.7351014229217,
+ "neg_parcel_ha_median": 72.94188710482453,
+ "pseudo_starts": {
+  "86948bf2-9f10-490d-a6ea-c3e1fd578eb8": "2024-12-H1",
+  "3df356a0-799d-11f1-988f-29f69c61740b": "2025-12-H1",
+  "07aca340-b377-11f0-84f8-b53449e2dd25": "2024-10-H1",
+  "da0ae710-17f5-11f1-ab51-1bd26848f511": "2026-02-H2",
+  "08906b10-6c28-11f1-89ae-cb591f3ea48d": "2025-10-H2",
+  "25fc4690-8422-11f0-ae95-67597f404442": "2026-02-H1",
+  "20a51b70-793e-11f0-88b3-aba97374aca7": "2025-04-H1",
+  "b2f224f2-dfa8-4ac9-9233-9cb9cceea3b3": "2025-09-H1",
+  "4e5a35d0-0865-11f1-9da4-c7e32c898d42": "2025-03-H2",
+  "e2068140-9ee2-11f0-9806-e77960ad5e7f": "2026-02-H1",
+  "78c8add0-edb0-11f0-a6f2-151163ec42ba": "2026-01-H2",
+  "8423a5c0-44c9-11f1-829c-4768578fe052": "2024-07-H2",
+  "133a5db0-44a9-11f1-ab32-c74e52a5f4a0": "2025-06-H1",
+  "427cde20-8aa2-11f0-b4d1-4511b48d89ac": "2025-03-H1",
+  "7e6455b0-2d25-11f0-be06-67284d8022d3": "2026-02-H1",
+  "a02e71d0-6447-11f1-bcb0-bf7a6ecfc2e2": "2025-10-H1",
+  "e77bf120-b5ab-11f0-b90c-a37547c789b2": "2025-09-H1",
+  "dd0f5500-8a7d-11f0-93d4-2f15be3e2588": "2025-06-H1",
+  "8a559590-5444-11f1-9574-89461fd8ecba": "2026-01-H2",
+  "8f86d5f0-874f-11f0-9a7a-13b895de2e9d": "2025-03-H2"
+ },
+ "note": "negatives: stage in {Announcement,Land Bank,Delayed}, no verified start, has polygon. 16 matched 1:1 to an sp16 positive on log parcel area and sharing its start period; 4 KS-greedy extras close the area distribution and are unpaired."
+}

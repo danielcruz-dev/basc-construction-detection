@@ -98,8 +98,16 @@ def run_site(d, M, tau=0.5):
             row[nm] = float(F[:, i].mean())
             row[f"{nm}_area_m2"] = float((F[:, i] >= tau).sum() * px_area)
         rows.append(row)
-    return {"site": {k: g[k] for k in ("uid","name","state","area_ha",
-                                       "n_buildings","start_period")},
+    # start_is_pseudo / class_label are carried through deliberately. A negative's
+    # start_period is an ANCHOR drawn from the positives, not an observation; if
+    # that distinction is lost here, a downstream reader sees 20 extra "verified
+    # starts" and every precision number computed from them is wrong.
+    site = {k: g[k] for k in ("uid","name","state","area_ha",
+                              "n_buildings","start_period")}
+    for k in ("start_is_pseudo", "class_label"):
+        if k in g:
+            site[k] = g[k]
+    return {"site": site,
             "aoi_provenance": g.get("aoi_provenance"),
             "n_aoi_px": int(n_aoi_px),
             "tau": tau, "px_area_m2": px_area, "series": rows}
