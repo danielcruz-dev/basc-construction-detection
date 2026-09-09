@@ -162,6 +162,14 @@ def main():
     ap.add_argument("--max-cloud", type=int, default=100,
                     help="tile-level metadata filter; loose by default because it is "
                          "measured over the whole ~110km granule, not the AOI")
+    ap.add_argument("--outer-buffer-m", type=float, default=0.0,
+                    help="expand the resolved AOI outward by this many metres before "
+                         "fetching. The evalscript multiplies by dataMask, which is 0 "
+                         "outside the request geometry, so land beyond the parcel is "
+                         "masked AT SOURCE and no control ring can be recovered from a "
+                         "parcel-only fetch. Buffering brings the ring into the raster; "
+                         "the parcel itself is still recoverable by rasterising the "
+                         "original geometry, which grid.json keeps as aoi_geometry.")
     ap.add_argument("--starts", default="",
                     help="JSON {uid: period} supplying a start for campuses that "
                          "have none in the truth set. A non-starting campus has no "
@@ -222,6 +230,10 @@ def main():
             geom = ground_square(s.lat, s.lon, a.aoi_m)
         else:
             geom = s.geometry
+        inner_geom = geom
+        if a.outer_buffer_m > 0:
+            from geo_utils import buffer_m as _buf
+            geom = _buf(geom, a.outer_buffer_m, s.lat)
         x0,y0,x1,y1 = geom.bounds
         import math
         lat = (y0+y1)/2
@@ -240,6 +252,11 @@ def main():
                    "aoi": aoi_to_json(aoi_rec) if aoi_rec else None,
                    "aoi_provenance": provenance(aoi_rec) if aoi_rec else None,
                    "lat":s.lat, "lon":s.lon,
+                   "outer_buffer_m": a.outer_buffer_m,
+                   # the AOI as resolved, BEFORE the outward buffer. The ring is
+                   # (fetched geometry minus this); without it the two are
+                   # indistinguishable in the raster and the control is lost.
+                   "aoi_geometry": mapping(inner_geom),
                    "geometry":mapping(geom)}, open(os.path.join(d,"grid.json"),"w"))
         print(f"  {s.unit_name[:44]:<44} {s.area_ha if hasattr(s,'area_ha') else s.area_m2/1e4:7.1f} ha  "
               f"{w}x{h} px  ({wm/w:.1f} m/px)")

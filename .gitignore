@@ -17,3 +17,13 @@ __pycache__/
 basc/results/acd_ui_corrections.json
 basc/stats_cache.json
 basc/results/sp16/
+
+# Threshold-sweep and per-zone feature intermediates. Regenerable from
+# basc_features.py in minutes, ~30 MB, and a committed sweep invites quoting
+# whichever k_sigma scored best -- which is selection on the test set.
+basc/results/sw_pos_*/
+basc/results/sw_neg_*/
+basc/results/features_*/
+basc/results/featzone_*/
+basc/results/neg20ring/
+basc/results/pos16ring/

@@ -107,20 +107,33 @@ def run_site(site_dir, M, cfg, persist_ahead=None):
         layers[o] = L
         combined[o] = L["new_soil"] | L["new_high"]
 
-    # --- causal detection over the development zone -------------------------
+    # --- causal detection, PER ZONE -----------------------------------------
+    # Detection used to run only over `development`, so every building-zone
+    # record carried detection_state=None and any scanning number measured on
+    # that zone was a plumbing artefact rather than a result -- 0 detections and
+    # 0 false alarms, which reads like a perfect detector and is an empty one.
+    series_by, dets_by, det_by_zone, prior_veg_by = {}, {}, {}, {}
+    for zname, zm in zmasks.items():
+        prior_veg = {}
+        veg_run = 0.0
+        series_z = []
+        for o in ords:
+            ch = combined[o] & (zm if zm is not None else True)
+            vl = layers[o]["veg_loss"] & (zm if zm is not None else True)
+            veg_run = max(veg_run, float(vl.sum()) * px_area)
+            prior_veg[o] = veg_run      # only ever accumulates from the PAST
+            series_z.append({"period": unordn_(o), "clear": True,
+                             "changed": bool(ch.sum() * px_area
+                                             >= cfg.get("mmu_m2", 8000.0))})
+        series_by[zname] = series_z
+        dets_by[zname] = detect.run_causal(series_z)
+        det_by_zone[zname] = {d.period: d for d in dets_by[zname]}
+        prior_veg_by[zname] = prior_veg
+
     dev_mask = zmasks.get("development")
-    prior_veg = {}
-    veg_run = 0.0
-    series = []
-    for o in ords:
-        ch = combined[o] & (dev_mask if dev_mask is not None else True)
-        vl = layers[o]["veg_loss"] & (dev_mask if dev_mask is not None else True)
-        veg_run = max(veg_run, float(vl.sum()) * px_area)
-        prior_veg[o] = veg_run          # only ever accumulates from the PAST
-        series.append({"period": unordn_(o), "clear": True,
-                       "changed": bool(ch.sum() * px_area >= cfg.get("mmu_m2", 8000.0))})
-    dets = detect.run_causal(series)
-    det_by = {d.period: d for d in dets}
+    # the campus-level record still keys off development
+    series = series_by.get("development") or next(iter(series_by.values()), [])
+    dets = dets_by.get("development") or next(iter(dets_by.values()), [])
 
     tiled = None
     if prov.get("aoi_needs_tiling") and dev_mask is not None:
@@ -139,23 +152,23 @@ def run_site(site_dir, M, cfg, persist_ahead=None):
     recs = []
     for i, o in enumerate(ords):
         # BACKWARD persistence only: observations at or before this period
-        pers = detect.causal_persistence(series, i)
         for zname, zm in zmasks.items():
+            pers = detect.causal_persistence(series_by[zname], i)
             f = change.zone_features(zm, layers[o], px_area, bbox, W, H,
                                      building_geom=building, point=point,
                                      cfg=cfg, persistence_masks=None)
             f.persistence = pers
             f.zone = zname
             d = f.as_dict()
-            d["prior_veg_loss_m2"] = prior_veg.get(o)
+            d["prior_veg_loss_m2"] = prior_veg_by[zname].get(o)
             d["visual_confirmed"] = None
+            dd = det_by_zone[zname].get(unordn_(o))
+            if dd is not None:
+                d["detection_state"] = dd.state
+                d["provisional_period"] = dd.provisional_period
+                d["confirmed_period"] = dd.confirmed_period
+                d["n_clear_seen"] = dd.n_clear_seen
             if zname == "development":
-                dd = det_by.get(unordn_(o))
-                if dd is not None:
-                    d["detection_state"] = dd.state
-                    d["provisional_period"] = dd.provisional_period
-                    d["confirmed_period"] = dd.confirmed_period
-                    d["n_clear_seen"] = dd.n_clear_seen
                 if tiled is not None:
                     d["tiled_top_disturbances"] = tiled.get(o, [])
                 sc = stage_mod.classify(d, aoi_source=prov.get("aoi_source"))
