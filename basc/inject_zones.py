@@ -16,6 +16,16 @@ detector has no negative class at all and no false-alarm rate can be computed.
 
   python inject_zones.py --roots results/pos16par,results/neg20 \
                          --pairs results/pairs_neg20.json
+
+Lever 3, the control ring. A grid fetched with --outer-buffer-m carries the
+parcel in `aoi_geometry` and the buffered fetch extent in `geometry`. Their
+difference is a ring of land nobody is building on, seen by the same sensor on
+the same date through the same atmosphere. Whatever fires there is not
+construction: a regional dry-down, a ploughing season, a snowmelt, a baseline
+year that was unusually green. It is written as the `context` zone so the
+detector can be gated on it. For such grids `development` is ALWAYS written as
+the parcel, footprint or not -- otherwise the whole-raster fallback in
+basc_features.zone_masks would silently make the ring part of the parcel.
 """
 from __future__ import annotations
 
@@ -70,6 +80,9 @@ def main() -> None:
     for uid, gp in grids.items():
         g = json.load(open(gp))
         parcel = shape(g["aoi_geometry"] if g.get("aoi_geometry") else g["geometry"])
+        ring = None
+        if g.get("aoi_geometry") and (g.get("outer_buffer_m") or 0) > 0:
+            ring = shape(g["geometry"]).difference(parcel)
         fp, kind = fps.get(uid), "real"
         if fp is None and uid in pairs and pairs[uid] in fps:
             # placebo: same footprint, moved onto this parcel, clipped to it
@@ -78,23 +91,37 @@ def main() -> None:
             dy = parcel.centroid.y - src.centroid.y
             fp = translate(src, xoff=dx, yoff=dy).intersection(parcel)
             kind = "placebo"
-        if fp is None or fp.is_empty:
-            done["none"] += 1
-            continue
-        zone = buffer_m(fp, a.buffer_m, g["lat"])
         aoi = g.get("aoi") or {}
         zones = dict(aoi.get("analysis_zones") or {})
-        zones["building"] = mapping(zone)
         zones["development"] = mapping(parcel)
+        if fp is None or fp.is_empty:
+            done["none"] += 1
+            kind = "none"
+            zones.pop("building", None)
+        else:
+            zone = buffer_m(fp, a.buffer_m, g["lat"])
+            zones["building"] = mapping(zone)
+            done[kind] += 1
+            if ring is not None:
+                # the 50 m footprint buffer spills past a small parcel; the
+                # control must not contain the thing it controls for
+                ring = ring.difference(zone)
+        if ring is not None and not ring.is_empty:
+            zones["context"] = mapping(ring)
         aoi["analysis_zones"] = zones
         aoi["footprint_kind"] = kind
         g["aoi"] = aoi
         json.dump(g, open(gp, "w"))
-        done[kind] += 1
+        ring_txt = (f"  ring {geodesic_area_m2(ring)/1e4:7.1f} ha"
+                    if ring is not None and not ring.is_empty else "")
+        if kind == "none":
+            print(f"  {g['name'][:38]:<38} {kind:<8} no footprint; parcel "
+                  f"{geodesic_area_m2(parcel)/1e4:7.1f} ha{ring_txt}")
+            continue
         print(f"  {g['name'][:38]:<38} {kind:<8} "
               f"footprint {geodesic_area_m2(zone)/1e4:7.1f} ha of "
               f"{geodesic_area_m2(parcel)/1e4:7.1f} ha parcel  "
-              f"({100*geodesic_area_m2(zone)/geodesic_area_m2(parcel):4.1f}%)")
+              f"({100*geodesic_area_m2(zone)/geodesic_area_m2(parcel):4.1f}%){ring_txt}")
     print(f"\nreal {done['real']}   placebo {done['placebo']}   none {done['none']}")
 
 

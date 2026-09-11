@@ -1,0 +1,169 @@
+HOW THE DETECTION ALGORITHM WORKS  (plain-language overview)
+BASC construction-start detector, ~/Personal/THE AMAZIN ALOGRITHM/basc
+Written 2026-09-10 from the code and logs as they stand today.
+For the long, section-by-section version see MODEL_STRUCTURE.txt (2026-09-07).
+
+--------------------------------------------------------------------------
+1. THE JOB
+--------------------------------------------------------------------------
+Given a data-centre site and a fortnight, say whether heavy construction
+(clearing, grading, foundations) has started there, using only what could
+have been seen from Sentinel-2 imagery up to that fortnight.
+
+It is NOT an alarm. It ranks sites into a human review queue. The number
+that matters is "how many real starts land in the queue", not accuracy.
+
+Time is cut into half-months called periods: 2024-03-H1 is 1-15 March,
+2024-03-H2 is 16-31 March. 24 periods per year.
+
+--------------------------------------------------------------------------
+2. THE PIPELINE, STEP BY STEP
+--------------------------------------------------------------------------
+Step 1  Decide WHERE to look                       (aoi.py, inject_zones.py)
+  One resolver picks the patch of ground per site, in priority order:
+    site plan  -> union of the PLANNED building footprints, if a georeferenced
+                  plan existed before the observation date
+    parcel     -> the validated Regrid parcel
+    point box  -> a square around the best coordinate
+  It always returns three zones from one fetch:
+    building     the planned footprints (or a placebo footprint on negatives)
+    development  the whole parcel
+    context      a ring of land AROUND the parcel where nobody is building
+  Why it matters: an 8,000 m2 pad is 0.25% of a 320 ha parcel (invisible) but
+  a large share of a footprint (obvious). The AOI choice dominates every number.
+  A plan filed in March 2025 may score June 2025 but never June 2024: no
+  information from after the fact is allowed in.
+
+Step 2  Fetch the imagery                                     (basc_fetch.py)
+  Per site, per period, one 10 m/px Sentinel-2 L2A raster from CDSE with six
+  bands (B02 B03 B04 B08 B11 B12) plus a cloud/valid mask. Optionally fetched
+  with an outer buffer so the context ring is in the raster.
+  Output: results/<run>/<site>/<period>.tif and a grid.json.
+
+Step 3  Unmix each pixel into four ground types              (basc_lsma.py)
+  Linear Spectral Mixture Analysis after Wu & Murray (2003). Every pixel is
+  expressed as a fraction of four endmembers: vegetation, soil, high albedo
+  (concrete, sand, also cloud), low albedo (water, shadow, asphalt).
+  Fractions are non-negative and sum to one. Endmembers are extracted from the
+  imagery itself (N-FINDR on the leading principal components), on ONE shared
+  basis for all sites, so positives and negatives are read the same way.
+  Thin cirrus is masked with s2cloudless because it unmixes as high albedo.
+
+Step 4  Ask "is this pixel unusual FOR ITSELF, THIS TIME OF YEAR"  (change.py)
+  Changed does not mean "soil above 0.5". It means the soil fraction is far
+  above what THIS pixel usually shows in THIS calendar fortnight.
+  For each pixel and fraction:
+    take the same fortnight (+/-1) in the 1-3 earlier years,
+    take the MEDIAN and a MAD-scaled sigma,
+    z = (value - median) / sigma.
+  A pixel is changed when z > k_sigma (default 2.5, swept up to 16) AND the
+  absolute move is at least 0.10. A sigma floor stops tarmac and water from
+  producing huge z on trivial wobble. Median/MAD, not mean/sd, so one missed
+  cloud in a baseline year does not suppress real change.
+  This is why a ploughed field in February does not fire: it ploughs every
+  February. (February is the single largest start month, 15.8% of starts.)
+
+Step 5  Group changed pixels into blobs                 (change.py, tiling.py)
+  Changed pixels are joined with 8-connectivity into components. Tiny blobs
+  (under 6 px) are dropped. Per zone, per period, the features are:
+    largest component area, total changed area, % of zone affected,
+    number of components, vegetation-loss area, new-soil area,
+    rectangularity of the largest component.
+  The minimum mapping unit is 8,000 m2: a zone counts as changed in a period
+  only if enough connected area crossed that bar.
+
+Step 6  Turn per-period flags into a call, causally             (detect.py)
+  Walk the periods forward. At each one use ONLY observations at or before it.
+    insufficient_evidence  fewer than 3 clear looks so far, or cloudy now
+    no_change              clear looks in hand, nothing firing
+    provisional_start      changed now, seen once. Actionable for the queue.
+    confirmed_start        changed on 2 consecutive clear looks (one miss
+                           allowed). Onset is dated to the FIRST sighting.
+  Cloud is not counter-evidence: a cloudy period holds the run, it does not
+  reset it. A snowed-in site is not a quiet site.
+
+Step 7  Optional stage call, 0-15%                                (stage.py)
+    0% none, 5% clearing, 10% grading, 15% foundations, "10-15" when the
+    sensor cannot separate a graded pad from poured concrete.
+  Foundations are never called from brightness alone (high albedo behaves
+  partly as a cloud detector). Thresholds are unvalidated starting values.
+
+Step 8  The ring gate (new, uncommitted today)          (score_features.py)
+  A per-pixel seasonal baseline cancels what a pixel usually does; it cannot
+  cancel what THIS YEAR does to every pixel (drought, late snowmelt, a
+  ploughing season shifted a fortnight). Those fire the parcel and the ring
+  together. The gate keeps a period only if the site's affected fraction
+  exceeds the ring's by a swept ratio, i.e. the change is CONCENTRATED on the
+  site. The gated series then goes through the same step-6 rules.
+
+--------------------------------------------------------------------------
+3. HOW IT IS SCORED
+--------------------------------------------------------------------------
+Test set: 36 campuses. 16 positives with a verified start and a pre-start
+site plan; 20 negatives (announced or land-banked, never built), 16 of them
+matched 1:1 to a positive on parcel area and season.
+
+  negatives  nothing was ever built, so ANY confirmed call is a false alarm.
+  positives  a confirmation counts only inside [start-2, start+k] periods;
+             earlier than that is a false alarm, not an early detection.
+
+Thresholds (k_sigma, tau, ring ratio) are SWEPT and reported as a curve.
+Choosing one on these 36 campuses and quoting its score would be fitting on
+the test set. Sweep intermediates are gitignored for that reason.
+
+--------------------------------------------------------------------------
+4. WHERE THE NUMBERS STAND
+--------------------------------------------------------------------------
+  Given the start date, does a start look different?   AUC 0.863 (NDVI),
+                                                        CI 0.71-0.97
+  Scanning every fortnight for the date (causal):       campus lift 1.5-1.7x,
+                                                        only 31% of starts
+                                                        confirmed within 6
+                                                        periods, median lag +5
+  Footprint zone instead of whole parcel, k_sigma 16:   11/16 positives,
+                                                        1/20 negatives,
+                                                        lift 2.06 (ceiling
+                                                        2.25 at this base rate)
+  Control ring gate:                                    negatives done today,
+                                                        positives 5/16 done
+                                                        when the machine
+                                                        rebooted; not scored
+
+Read these carefully: the AUC is the transferable number. Lift is measured at
+a balanced 44% base rate and will shrink on the 932-campus pipeline. The 2.06
+was swept on the same 36 campuses it is scored on and is optimistic.
+
+--------------------------------------------------------------------------
+5. WHAT IT IS NOT
+--------------------------------------------------------------------------
+  - Not a trained ML model. There is no fitted classifier; every threshold is
+    hand-set and swept. The .pkl files one directory up are a different thing
+    (a power-capacity regressor), unrelated to this detector.
+  - Not a when-detector yet. It separates starters from non-starters better
+    than chance, but usually finds the start late or not at all.
+  - Not trained on the Supabase pct_construction_status labels. Those track
+    progress AFTER a human decided construction began, so they cannot teach
+    onset. Tracker ENTRY (about 10 near-onset campuses a month) is a
+    validation stream, not a training set.
+  - Not the production detector. Production is the Supabase function
+    detect-construction-start (v27) in the ACD repo; this is the candidate
+    replacement under evaluation.
+
+--------------------------------------------------------------------------
+6. FILE MAP
+--------------------------------------------------------------------------
+  basc_fetch.py          get rasters from CDSE            (step 2)
+  aoi.py, inject_zones   where to look, three zones       (step 1)
+  basc_lsma.py           endmembers + unmixing            (step 3)
+  change.py              seasonal baseline, components    (steps 4-5)
+  basc_features.py       runs 3-7 per site, per zone
+  detect.py              causal three-state rules         (step 6)
+  stage.py               0-15% stage call                 (step 7)
+  score_features.py      scoring, sweeps, ring gate       (step 8, §3)
+  basc_discriminate.py   AUC given the date
+  basc_replay_causal.py  scan for the date
+  pick_negatives.py      area-matched negative class
+  replay.py, truth.py    period math, verified starts
+  results/               per-run outputs (rf_pos_<k>, rf_neg_<k> = today's
+                         ring sweep by k_sigma)
+  BUILD_LOG_*.md         day-by-day findings; newest wins

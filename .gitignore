@@ -27,3 +27,6 @@ basc/results/features_*/
 basc/results/featzone_*/
 basc/results/neg20ring/
 basc/results/pos16ring/
+# ring-lever feature sweeps (2026-09-10): intermediates, same rule as sw_*
+basc/results/rf_pos_*/
+basc/results/rf_neg_*/
